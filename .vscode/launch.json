@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "command": "yarn run dev",
+            "name": "Start Hugo Server",
+            "request": "launch",
+            "type": "node-terminal",
+            "serverReadyAction":{
+                "pattern": "Web Server is available at \/\/localhost:([0-9]+)\/",
+                "uriFormat": "http://localhost:%s",
+                "action": "openExternally",
+            },
+            "sourceMaps": false
+        },
+    ]
+}

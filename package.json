@@ -1,0 +1,28 @@
+{
+  "name": "federated-manga-spec",
+  "version": "0.0.1",
+  "description": "Hugo theme for the Federated Manga specification  .",
+  "main": "none.js",
+  "scripts": {
+    "dev": "hugo server --themesDir ./themes",
+    "build": "hugo --minify --themesDir ./themes",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/federated-manga/federated-manga-docs.git"
+  },
+  "author": "",
+  "private": true,
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/federated-manga/federated-manga-docs"
+  },
+  "homepage": "https://github.com/federated-manga/federated-manga-docs",
+  "dependencies": {
+    "autoprefixer": "^10.2.5",
+    "postcss": "^8.2.9",
+    "postcss-cli": "^8.3.1"
+  },
+  "devDependencies": {}
+}
