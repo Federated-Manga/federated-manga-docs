@@ -1,0 +1,43 @@
+{{/*
+
+    Render an HTTP API, given:
+  
+    * `api_data`: the OpenAPI 3 data
+    * `server`: the complete endpoint of the server
+    * `path`: the directory under /data where we found this API definition.
+    We use this to resolve "$ref" values, since they are relative to the schema's
+    location.
+  
+    */}}
+  
+    {{ $api_data := index .api_data }}
+    {{ $server := .server }}
+    {{ $path := .path }}
+  
+    {{ range $path_name, $path_data := $api_data.paths }}
+        {{ $endpoint := delimit (slice $server $path_name ) "" }}
+
+        {{/* note that a `paths` entry can be a $ref */}}
+        {{ $params := dict "endpoint" $endpoint "path" $path }}
+        
+
+        {{ with $path_data.get }}
+            {{ $operation_params := merge $params (dict "method" "GET" "operation_data" . ) }}
+            {{ partial "openapi/render-operation" $operation_params }}
+        {{ end }}
+  
+        {{ with $path_data.post }}
+            {{ $operation_params := merge $params (dict "method" "POST" "operation_data" . ) }}
+            {{ partial "openapi/render-operation" $operation_params }}
+        {{ end }}
+  
+        {{ with $path_data.put }}
+            {{ $operation_params := merge $params (dict "method" "PUT" "operation_data" . ) }}
+            {{ partial "openapi/render-operation" $operation_params }}
+        {{ end }}
+  
+        {{ with $path_data.delete }}
+            {{ $operation_params := merge $params (dict "method" "DELETE" "operation_data" . ) }}
+            {{ partial "openapi/render-operation" $operation_params }}
+        {{ end }}
+    {{ end }}

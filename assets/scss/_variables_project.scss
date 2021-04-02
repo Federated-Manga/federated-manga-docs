@@ -3,10 +3,39 @@
 Add styles or override variables from the theme here.
 
 */
+@import "_variables.scss";
 
 $primary: white;
+$secondary: #0098D4;
+$dark: #333;
+$gray-100: #FBFBFB;
+
+$secondary-background: #E5F5FB;
+$secondary-lighter-background: #F4FaFC;
+$secondary-lightest-background: #FBFDFD;
+
+
+$warning: #FF6666;
+$note: $secondary;
+
+$note-background: $secondary-background;
+$warning-background: #FFE0E0;
+
+$table-row-alternate: $secondary-lightest-background;
+$table-row-default: $secondary-lighter-background;
+
+$h1-font-size: $font-size-base * 1;
+$h2-font-size: $font-size-base * 1;
+$h3-font-size: $font-size-base * 1;
+$h4-font-size: $font-size-base * 1;
+$h5-font-size: $font-size-base * 1;
+$h6-font-size: $font-size-base;
 
 $navbar-dark-color: rgba(black, 0.75);
 $navbar-dark-hover-color: rgba(black, 0.5);
 $navbar-dark-active-color: black;
 $navbar-dark-disabled-color: rgba(black, 0.25);
+
+
+$warning: #FF6666;
+$font-weight-bold: 800;

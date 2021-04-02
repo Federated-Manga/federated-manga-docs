@@ -1,9 +1,9 @@
 ---
-title: "Reference"
-linkTitle: "Reference"
+title: "Specification"
+linkTitle: "Specification"
 weight: 9
 description: >
-  Low level reference docs for your project.
+  The Federated Manga Specification.
 ---
 
 {{% pageinfo %}}

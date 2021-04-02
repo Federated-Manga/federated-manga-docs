@@ -28,6 +28,7 @@
 		"bungcip.better-toml",
 		"davidanson.vscode-markdownlint",
 		"yzhang.markdown-all-in-one",
+		"budparr.language-hugo-vscode"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

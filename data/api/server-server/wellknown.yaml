@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: Federated Manga Server Discovery API
+  version: 0.0.1
+servers:
+- url: https://example.com
+tags:
+- name: .well-known
+  description: How to find services and load balancers
+paths:
+  "/.well-known/manga/servers":
+    get:
+      tags:
+      - .well-known
+      summary: Gets information of delegated servers for server-server communication.
+      description: |
+        Gets information of delegated servers for server-server communication between federated manga servers. 
+        Servers should follow 30x redirects, carefully avoiding redirect loops, and use normal X.509 certificate validation.
+      operationId: getWellKnown
+      responses:
+        200:
+          description: The delegated server information. 
+          content: 
+            application/json: 
+              schema:
+                type: object
+                properties:
+                  primary:
+                    type: string
+                    format: url
+                    description: Used for discovering the server API location
+                    example: "https://manga.example.com/v1"
+                  load-balancers:
+                    type: array
+                    description: Federated instances hosted by volunteers, allowing for horizontal scalability without providing write access.
+                    items:
+                      type: string
+                      format: url
+                    example:
+                    - "https://manga.glorious.volunteer/v1"
+                    - "https://manga.giga.chad/v1"
+                    - "https://cultured.manga.enjoyer/v1"
