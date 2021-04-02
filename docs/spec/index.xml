@@ -1,0 +1,57 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Federated Manga – Specification</title><link>/docs/spec/</link><description>Recent content in Specification on Federated Manga</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/spec/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Server-Server API</title><link>/docs/spec/server_server/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/spec/server_server/</guid><description>
+&lt;p>Federated Manga servers use the Server-Server APIs to communicate with each other.
+Servers use these APIs to push catalog changes to each other in real-time, and to retrieve
+older catalog entries from each other.&lt;/p>
+&lt;h2 id="server-discovery">Server Discovery&lt;/h2>
+&lt;h3 id="resolving-server-names">Resolving Server Names&lt;/h3>
+&lt;p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p>
+&lt;section class="rendered-data http-api GET">
+&lt;details open>
+&lt;summary>
+&lt;h1 id="gethttpsexamplecomwell-knownmangaservers">
+&lt;span class="http-api-method GET">GET&lt;/span>
+&lt;span class="endpoint">https://example.com/.well-known/manga/servers&lt;/span>
+&lt;/h1>
+&lt;hr/>
+&lt;p>Gets information of delegated servers for server-server communication between federated manga servers.
+Servers should follow 30x redirects, carefully avoiding redirect loops, and use normal X.509 certificate validation.&lt;/p>
+&lt;/summary>
+&lt;div class="basic-info">
+&lt;div class="bold">Rate-limited:&lt;/div>
+&lt;div>No&lt;/div>
+&lt;div class="bold">Requires authentication:&lt;/div>
+&lt;div>No&lt;/div>
+&lt;/div>
+&lt;hr/>
+&lt;h2>Request&lt;/h2>
+&lt;p>No request parameters or request body.&lt;/p>
+&lt;hr/>
+&lt;h2>Responses&lt;/h2>
+&lt;div class="statuses">
+&lt;span>Status&lt;/span>
+&lt;span>Description&lt;/span>
+&lt;p>&lt;code>200&lt;/code>&lt;/p>
+&lt;p>&lt;span>The delegated server information.&lt;/span>&lt;/p>
+&lt;/div>
+&lt;h3>200 response&lt;/h3>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">load-balancers&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">[string]&lt;/code>&lt;/p>
+&lt;div>Federated instances hosted by volunteers, allowing for horizontal scalability without providing write access.&lt;/div>
+&lt;p>&lt;code class="nobreak">primary&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>Used for discovering the server API location&lt;/div>
+&lt;/div>
+&lt;div class="highlight">&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">&lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;load-balancers&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">[&lt;/span>
+&lt;span style="color:#4e9a06">&amp;#34;https://manga.glorious.volunteer/v1&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#4e9a06">&amp;#34;https://manga.giga.chad/v1&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#4e9a06">&amp;#34;https://cultured.manga.enjoyer/v1&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">],&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;primary&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;https://manga.example.com/v1&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/details>
+&lt;/section></description></item></channel></rss>
