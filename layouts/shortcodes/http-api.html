@@ -17,9 +17,10 @@
   
   {{ $spec := .Params.spec}}
   {{ $api := .Params.api}}
+  {{ $depth := default 4 .Params.depth }}
 
   {{ $api_data := index .Site.Data.api $spec $api }}
   {{ $server := index $api_data.servers 0 "url" }}
   {{ $path := delimit (slice "api" $spec) "/" }}
-  {{ partial "openapi/render-api" (dict "api_data" $api_data "server" $server "path" $path) }}
+  {{ partial "openapi/render-api" (dict "api_data" $api_data "server" $server "path" $path "depth" $depth) }}
   

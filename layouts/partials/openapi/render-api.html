@@ -13,6 +13,7 @@
     {{ $api_data := index .api_data }}
     {{ $server := .server }}
     {{ $path := .path }}
+    {{ $depth := .depth }}
   
     {{ range $path_name, $path_data := $api_data.paths }}
         {{ $endpoint := delimit (slice $server $path_name ) "" }}
@@ -22,22 +23,22 @@
         
 
         {{ with $path_data.get }}
-            {{ $operation_params := merge $params (dict "method" "GET" "operation_data" . ) }}
+            {{ $operation_params := merge $params (dict "depth" $depth "method" "GET" "operation_data" . ) }}
             {{ partial "openapi/render-operation" $operation_params }}
         {{ end }}
   
         {{ with $path_data.post }}
-            {{ $operation_params := merge $params (dict "method" "POST" "operation_data" . ) }}
+            {{ $operation_params := merge $params (dict "depth" $depth "method" "POST" "operation_data" . ) }}
             {{ partial "openapi/render-operation" $operation_params }}
         {{ end }}
   
         {{ with $path_data.put }}
-            {{ $operation_params := merge $params (dict "method" "PUT" "operation_data" . ) }}
+            {{ $operation_params := merge $params (dict "depth" $depth "method" "PUT" "operation_data" . ) }}
             {{ partial "openapi/render-operation" $operation_params }}
         {{ end }}
   
         {{ with $path_data.delete }}
-            {{ $operation_params := merge $params (dict "method" "DELETE" "operation_data" . ) }}
+            {{ $operation_params := merge $params (dict "depth" $depth "method" "DELETE" "operation_data" . ) }}
             {{ partial "openapi/render-operation" $operation_params }}
         {{ end }}
     {{ end }}

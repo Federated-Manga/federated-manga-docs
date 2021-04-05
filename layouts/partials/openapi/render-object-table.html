@@ -11,16 +11,19 @@
   
   */}}
   
+  {{ $depth := .depth}}
   {{ $caption := .caption }}
   {{ $properties := .properties}}
   {{ $required := .required}}
-  
+  {{ $header := printf "h%v" (add $depth 2) }}
+
   {{ if $properties }}
-  
-<div class="properties">
+
 {{ with $caption }}
-<caption>{{ . }}</caption>
+{{ printf "<%v class=\"type no-numbers\">%v</%v>" $header . $header | safeHTML }}
 {{ end }}
+<div class="properties">
+
 <span class="header">Name</span>
 
 <span class="header">Type</span>
@@ -30,7 +33,6 @@
       {{ range $property_name, $property := $properties }}
   
           {{ $property := partial "json-schema/resolve-allof" $property }}
-  
           {{/*
               If the property has a `title`, use that rather than `type`.
               This means we can write things like `EventFilter` rather than `object`.

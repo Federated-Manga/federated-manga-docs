@@ -18,19 +18,20 @@
 	
 	*/}}
 	
+	{{ $depth := .depth }}
 	{{ $method := .method }}
 	{{ $endpoint := .endpoint }}
 	{{ $operation_data := .operation_data }}
 	{{ $path := .path }}
-	
+    {{ $header := printf "h%v" $depth }}
 {{/* no formatting because markdown */}}
 <section class="rendered-data http-api {{ $method }}">
 <details {{ if not site.Params.ui.rendered_data_collapsed }}open{{ end }}>
 <summary>
-<h1 id="{{ lower $method }}{{ anchorize $endpoint }}">
+{{ printf "<%v id=\"%v%v\">" $header (lower $method) (anchorize $endpoint) | safeHTML}}
 <span class="http-api-method {{ $method }}">{{ $method }}</span>
 <span class="endpoint{{ if $operation_data.deprecated }} deprecated-inline{{ end }}">{{ $endpoint }}</span>
-</h1>
+{{ printf "</%v>" $header | safeHTML}}
 <hr/>
 
 {{ if $operation_data.deprecated }}
@@ -49,8 +50,8 @@
 </div>
 
 <hr/>
-{{ partial "openapi/render-request"   (dict "parameters" $operation_data.parameters "path" $path) }}
+{{ partial "openapi/render-request"   (dict "depth" $depth "parameters" $operation_data.parameters "path" $path) }}
 <hr/>
-{{ partial "openapi/render-responses" (dict "responses"  $operation_data.responses  "path" $path) }}
+{{ partial "openapi/render-responses" (dict "depth" $depth "responses"  $operation_data.responses  "path" $path) }}
 </details>
 </section>

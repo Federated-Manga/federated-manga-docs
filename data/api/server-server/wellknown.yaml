@@ -40,3 +40,6 @@ paths:
                     - "https://manga.glorious.volunteer/v1"
                     - "https://manga.giga.chad/v1"
                     - "https://cultured.manga.enjoyer/v1"
+                required:
+                - primary
+                - load-balancers

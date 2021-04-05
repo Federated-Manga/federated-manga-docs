@@ -89,10 +89,6 @@ function populateIds() {
   
     // make the title from the H1
     const h1 = document.body.querySelector("h1");
-    const title = document.createElement("a");
-    title.id = "toc-title";
-    title.setAttribute("href", "#");
-    title.textContent = h1.textContent;
   
     // make the content
     const content = document.body.querySelector(".td-content");
@@ -113,8 +109,7 @@ function populateIds() {
     nav.appendChild(section.content);
     // append title and content to the #toc placeholder
     const toc = document.body.querySelector("#toc");
-    toc.appendChild(title);
-    toc.appendChild(nav);
+    toc.replaceWith(nav);
   
     // tell ToC items about any rendered-data headings they contain
     setTocItemChildren(section.content, headings);
@@ -298,7 +293,7 @@ function populateIds() {
   
     makeToc();
   
-    const toc = document.querySelector("#toc");
+    const toc = document.querySelector("#TableOfContents");
     toc.addEventListener("click", event => {
       if (event.target.tagName === "A") {
         setTocEntry(event.target);

@@ -13,14 +13,17 @@
   
   */}}
   
+  {{ $depth := .depth }}
   {{ $responses := .responses }}
   {{ $path := .path }}
+  {{ $header := printf "h%v" (add $depth 1) }}
+  {{ $header2 := printf "h%v" (add $depth 2) }}
   
-  <h2>Responses</h2>
+  {{ printf "<%v class=\"no-numbers\">Responses</%v>" $header $header | safeHTML}}
   
   <div class="statuses">
-  <span>Status</span>
-  <span>Description</span>
+  <span class="header">Status</span>
+  <span class="header">Description</span>
 
   {{ range $code, $response := $responses }}
   <code>{{ $code }}</code>
@@ -38,7 +41,7 @@
           {{ $schema := partial "json-schema/resolve-allof" $schema }}
    
           {{ if or $schema.properties (eq $schema.type "array") }}
-  <h3>{{ $code}} response</h3>
+{{ printf "<%v class=\"response no-numbers\">%v Response</%v>" $header2 $code $header2 | safeHTML}}
               {{/*
                 All this is to work out how to express the content of the response
                 in the case where it is an array.
@@ -64,7 +67,7 @@
               {{ $additional_types := partial "json-schema/resolve-additional-types" $schema }}
               {{ $additional_types = uniq $additional_types }}
               {{ range $additional_types }}
-                  {{ partial "openapi/render-object-table" (dict "caption" .title "properties" .properties "required" .required) }}
+                  {{ partial "openapi/render-object-table" (dict "depth" $depth "caption" .title "properties" .properties "required" .required) }}
               {{ end }}
               {{ $example := partial "json-schema/resolve-example" $schema }}
               {{ if $response.examples }}

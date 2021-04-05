@@ -1,0 +1,38 @@
+openapi: 3.0.3
+info:
+  title: Federated Manga Version API
+  version: 0.0.1
+servers:
+- url: https://manga.example.com
+tags:
+- name: federation
+  description: Communication between servers
+paths:
+  "/v1/federation/version":
+    get:
+      tags:
+      - federation
+      summary: Get the implementation name and version of this server.
+      description: Get the implementation name and version of this server.
+      operationId: getVersion
+      responses:
+        200:
+          description:
+            The implementation name and version of this server.
+          content:
+            application/json: 
+              schema:
+                type: object
+                properties:
+                  server:
+                    title: Server
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Arbitrary name that identifies this implementation.
+                        example: "go-federated-manga"
+                      version:
+                        type: string
+                        description: Version of this implementation. The version format depends on the implementation.
+                        example: "0.0.1"

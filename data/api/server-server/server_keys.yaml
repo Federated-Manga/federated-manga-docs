@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info:
+  title: "Federated Manga Key Exchange API"
+  version: "0.0.1"
+servers:
+- url: https://manga.example.com
+tags:
+- name: keys
+  description: Exchanging signing keys between servers
+paths:
+  "/v1/keys":
+    get:
+      summary: Get the server's public key(s)
+      description: |-
+        Gets the server's published signing keys.
+        The server may have any number of active keys and may have a
+        number of old keys.
+
+        Intermediary witnesses should cache a response for half of its
+        lifetime to avoid serving a stale response. Originating servers should
+        avoid returning responses that expire in less than an hour to avoid
+        repeated requests for a certificate that is about to expire. Requesting
+        servers should limit how frequently they query for certificates to
+        avoid flooding a server with requests.
+
+        If the server fails to respond to this request, intermediary witnesses
+        should continue to return the last response they received from the server
+        so that others may make use of the witness to check signatures of old events.
+      operationId: getServerKey
+      responses:
+        200:
+          description: The server's keys
+          content:
+            application/json:
+              schema:
+                $ref: "definitions/keys.yaml"
