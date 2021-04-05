@@ -1,17 +1,37 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Federated Manga – Documentation</title><link>/docs/</link><description>Recent content in Documentation on Federated Manga</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Server-Server API</title><link>/docs/spec/server_server/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/spec/server_server/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Federated Manga – Documentation</title><link>/docs/</link><description>Recent content in Documentation on Federated Manga</description><generator>Hugo -- gohugo.io</generator><atom:link href="/docs/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs: Appendices</title><link>/docs/spec/appendices/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/spec/appendices/</guid><description>
+&lt;h2 id="unpadded-base64">Unpadded Base64&lt;/h2>
+&lt;p>See the &lt;a href="https://matrix.org/docs/spec/appendices#unpadded-base64">Matrix protocol&lt;/a>&lt;/p>
+&lt;h2 id="signing-json">Signing JSON&lt;/h2>
+&lt;p>See the &lt;a href="https://matrix.org/docs/spec/appendices#signing-json">Matrix protocol&lt;/a>&lt;/p></description></item><item><title>Docs: Server-Server API</title><link>/docs/spec/server_server/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/spec/server_server/</guid><description>
 &lt;p>Federated Manga servers use the Server-Server APIs to communicate with each other.
 Servers use these APIs to push catalog changes to each other in real-time, and to retrieve
-older catalog entries from each other.&lt;/p>
+older catalog entries from each other. Much of the design is borrowed from the &lt;a href="https://matrix.org">Matrix project&lt;/a>
+and has simply been adapted for use with manga distribution.&lt;/p>
 &lt;h2 id="server-discovery">Server Discovery&lt;/h2>
-&lt;h3 id="resolving-server-names">Resolving Server Names&lt;/h3>
-&lt;p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p>
+&lt;h3 id="servers-and-load-balancers">Servers and Load Balancers&lt;/h3>
+&lt;p>Anyone can host a server, but some scanlators will put themselves in charge of
+extremely popular manga, attracting a weekly DDoS. To combat this, servers should advertise
+a volunteer&amp;rsquo;s server, who are trusted to mirror the catalog and keep it alive even if the main
+server goes down.&lt;/p>
+&lt;h3 id="why-this-design">Why this design?&lt;/h3>
+&lt;p>This design is a compromise in a world without IPFS-hosted catalogs. Individual instances
+are fully capable of doing their own load balancing using multiple DNS records, HAProxy,
+or cloud services, but on failure they will still take their entire catalog down with them.
+With this design, new users will not be able to access the catalog, but it will still be
+cached for old users.&lt;/p>
+&lt;p>Of course, the final solution is to host the actively updated catalog on a P2P swarm. But
+such a thing has never been made nor proven to work. IPFS with IPNS/Namecoin/etc. are too
+complicated, and no one really understands how to design an application with these tools.
+Much of this work would be completely deprecated by a competent fully P2P design.&lt;/p>
+&lt;p>Never forget that &lt;strong>whatever we make needs to be usable by those with no technical expertise&lt;/strong>.
+Until we have a design revelation, this is the compromise we need to work with.&lt;/p>
 &lt;section class="rendered-data http-api GET">
 &lt;details open>
 &lt;summary>
-&lt;h1 id="gethttpsexamplecomwell-knownmangaservers">
+&lt;h4 id="gethttpsexamplecomwell-knownmangaservers">
 &lt;span class="http-api-method GET">GET&lt;/span>
 &lt;span class="endpoint">https://example.com/.well-known/manga/servers&lt;/span>
-&lt;/h1>
+&lt;/h4>
 &lt;hr/>
 &lt;p>Gets information of delegated servers for server-server communication between federated manga servers.
 Servers should follow 30x redirects, carefully avoiding redirect loops, and use normal X.509 certificate validation.&lt;/p>
@@ -23,27 +43,27 @@ Servers should follow 30x redirects, carefully avoiding redirect loops, and use 
 &lt;div>No&lt;/div>
 &lt;/div>
 &lt;hr/>
-&lt;h2>Request&lt;/h2>
+&lt;h5 class="no-numbers">Request&lt;/h5>
 &lt;p>No request parameters or request body.&lt;/p>
 &lt;hr/>
-&lt;h2>Responses&lt;/h2>
+&lt;h5 class="no-numbers">Responses&lt;/h5>
 &lt;div class="statuses">
-&lt;span>Status&lt;/span>
-&lt;span>Description&lt;/span>
+&lt;span class="header">Status&lt;/span>
+&lt;span class="header">Description&lt;/span>
 &lt;p>&lt;code>200&lt;/code>&lt;/p>
 &lt;p>&lt;span>The delegated server information.&lt;/span>&lt;/p>
 &lt;/div>
-&lt;h3>200 response&lt;/h3>
+&lt;h6 class="response no-numbers">200 Response&lt;/h6>
 &lt;div class="properties">
 &lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
 &lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
 &lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
 &lt;p>&lt;code class="nobreak">load-balancers&lt;/code>&lt;/p>
 &lt;p>&lt;code class="nobreak">[string]&lt;/code>&lt;/p>
-&lt;div>Federated instances hosted by volunteers, allowing for horizontal scalability without providing write access.&lt;/div>
+&lt;div>&lt;strong>Required: &lt;/strong>Federated instances hosted by volunteers, allowing for horizontal scalability without providing write access.&lt;/div>
 &lt;p>&lt;code class="nobreak">primary&lt;/code>&lt;/p>
 &lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
-&lt;div>Used for discovering the server API location&lt;/div>
+&lt;div>&lt;strong>Required: &lt;/strong>Used for discovering the server API location&lt;/div>
 &lt;/div>
 &lt;div class="highlight">&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">&lt;span style="color:#000;font-weight:bold">{&lt;/span>
 &lt;span style="color:#204a87;font-weight:bold">&amp;#34;load-balancers&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">[&lt;/span>
@@ -52,6 +72,478 @@ Servers should follow 30x redirects, carefully avoiding redirect loops, and use 
 &lt;span style="color:#4e9a06">&amp;#34;https://cultured.manga.enjoyer/v1&amp;#34;&lt;/span>
 &lt;span style="color:#000;font-weight:bold">],&lt;/span>
 &lt;span style="color:#204a87;font-weight:bold">&amp;#34;primary&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;https://manga.example.com/v1&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/details>
+&lt;/section>
+&lt;h2 id="server-implementation">Server Implementation&lt;/h2>
+&lt;section class="rendered-data http-api GET">
+&lt;details open>
+&lt;summary>
+&lt;h3 id="gethttpsmangaexamplecomv1federationversion">
+&lt;span class="http-api-method GET">GET&lt;/span>
+&lt;span class="endpoint">https://manga.example.com/v1/federation/version&lt;/span>
+&lt;/h3>
+&lt;hr/>
+&lt;p>Get the implementation name and version of this server.&lt;/p>
+&lt;/summary>
+&lt;div class="basic-info">
+&lt;div class="bold">Rate-limited:&lt;/div>
+&lt;div>No&lt;/div>
+&lt;div class="bold">Requires authentication:&lt;/div>
+&lt;div>No&lt;/div>
+&lt;/div>
+&lt;hr/>
+&lt;h4 class="no-numbers">Request&lt;/h4>
+&lt;p>No request parameters or request body.&lt;/p>
+&lt;hr/>
+&lt;h4 class="no-numbers">Responses&lt;/h4>
+&lt;div class="statuses">
+&lt;span class="header">Status&lt;/span>
+&lt;span class="header">Description&lt;/span>
+&lt;p>&lt;code>200&lt;/code>&lt;/p>
+&lt;p>&lt;span>The implementation name and version of this server.&lt;/span>&lt;/p>
+&lt;/div>
+&lt;h5 class="response no-numbers">200 Response&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">server&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">Server&lt;/code>&lt;/p>
+&lt;div>&lt;/div>
+&lt;/div>
+&lt;h5 class="type no-numbers">Server&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">name&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>Arbitrary name that identifies this implementation.&lt;/div>
+&lt;p>&lt;code class="nobreak">version&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>Version of this implementation. The version format depends on the implementation.&lt;/div>
+&lt;/div>
+&lt;div class="highlight">&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">&lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;server&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;name&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;go-federated-manga&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;version&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;0.0.1&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/details>
+&lt;/section>
+&lt;h2 id="signing-keys">Signing Keys&lt;/h2>
+&lt;p>Federation allows third party servers to mirror releases by scanlation groups.
+In order to prevent a user&amp;rsquo;s orders of christmas cake being replaced by cheese pizza,
+the amount of &lt;em>&amp;ldquo;dude trust me&amp;rdquo;&lt;/em> needs to be minimized. To do this, we use asymmetric keys to
+sign releases by groups, and catalogs from servers. The concept is more-or-less analogous
+to package management mirroring in Linux.&lt;/p>
+&lt;p>The issue is further confounded by the fact that
+&lt;strong>federated networks don&amp;rsquo;t have trusted third parties&lt;/strong>. The design is borrowed from the
+&lt;a href="https://matrix.org/docs/spec/server_server/r0.1.4#publishing-keys">Matrix protocol&lt;/a>, which
+allows servers to act as a witness (aka notary), claiming to know the published signing key
+of an offline server. More witnesses will result in less &lt;em>&amp;ldquo;dude trust me&amp;rdquo;&lt;/em>.&lt;/p>
+&lt;p>&lt;strong>NOTE:&lt;/strong> The server hosting the original releases always has &lt;em>&amp;ldquo;dude trust me&amp;rdquo;&lt;/em>.
+In other words, if multiple scanlation groups decide to congregate at a single server,
+every group needs to give the server absolute trust.&lt;/p>
+&lt;section class="rendered-data http-api GET">
+&lt;details open>
+&lt;summary>
+&lt;h3 id="gethttpsmangaexamplecomv1keys">
+&lt;span class="http-api-method GET">GET&lt;/span>
+&lt;span class="endpoint">https://manga.example.com/v1/keys&lt;/span>
+&lt;/h3>
+&lt;hr/>
+&lt;p>&lt;p>Gets the server&amp;rsquo;s published signing keys.
+The server may have any number of active keys and may have a
+number of old keys.&lt;/p>
+&lt;p>Intermediary witnesses should cache a response for half of its
+lifetime to avoid serving a stale response. Originating servers should
+avoid returning responses that expire in less than an hour to avoid
+repeated requests for a certificate that is about to expire. Requesting
+servers should limit how frequently they query for certificates to
+avoid flooding a server with requests.&lt;/p>
+&lt;p>If the server fails to respond to this request, intermediary witnesses
+should continue to return the last response they received from the server
+so that others may make use of the witness to check signatures of old events.&lt;/p>
+&lt;/p>
+&lt;/summary>
+&lt;div class="basic-info">
+&lt;div class="bold">Rate-limited:&lt;/div>
+&lt;div>No&lt;/div>
+&lt;div class="bold">Requires authentication:&lt;/div>
+&lt;div>No&lt;/div>
+&lt;/div>
+&lt;hr/>
+&lt;h4 class="no-numbers">Request&lt;/h4>
+&lt;p>No request parameters or request body.&lt;/p>
+&lt;hr/>
+&lt;h4 class="no-numbers">Responses&lt;/h4>
+&lt;div class="statuses">
+&lt;span class="header">Status&lt;/span>
+&lt;span class="header">Description&lt;/span>
+&lt;p>&lt;code>200&lt;/code>&lt;/p>
+&lt;p>&lt;span>The server’s keys&lt;/span>&lt;/p>
+&lt;/div>
+&lt;h5 class="response no-numbers">200 Response&lt;/h5>
+&lt;h5 class="type no-numbers">Server Keys&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">old_verify_keys&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">{ string: Old Verify Key}&lt;/code>&lt;/p>
+&lt;div>&lt;p>The public keys that the server used to use and when it stopped using them.&lt;/p>
+&lt;p>The object&amp;rsquo;s key is the algorithm and version combined (&lt;code>ed25519&lt;/code> being the
+algorithm and &lt;code>0ldK3y&lt;/code> being the version in the example below). Together,
+this forms the Key ID. The version must have characters matching the regular
+expression &lt;code>[a-zA-Z0-9_]&lt;/code>.&lt;/p>
+&lt;/div>
+&lt;p>&lt;code class="nobreak">server_name&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>DNS name of the homeserver.&lt;/div>
+&lt;p>&lt;code class="nobreak">signatures&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">Signatures&lt;/code>&lt;/p>
+&lt;div>&lt;p>Digital signatures for this object signed using the &lt;code>verify_keys&lt;/code>.&lt;/p>
+&lt;p>The signature is calculated using the process described at &lt;a href="../appendices/#signing-json">Signing JSON&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>&lt;code class="nobreak">valid_until_ts&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">integer&lt;/code>&lt;/p>
+&lt;div>&lt;p>POSIX timestamp when the list of valid keys should be refreshed. This field MUST
+be ignored in room versions 1, 2, 3, and 4. Keys used beyond this timestamp MUST
+be considered invalid, depending on the &lt;a href="../#room-versions">room version specification&lt;/a>.&lt;/p>
+&lt;p>Servers MUST use the lesser of this field and 7 days into the future when
+determining if a key is valid. This is to avoid a situation where an attacker
+publishes a key which is valid for a significant amount of time without a way
+for the homeserver owner to revoke it.&lt;/p>
+&lt;/div>
+&lt;p>&lt;code class="nobreak">verify_keys&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">{ string: Verify Key}&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>&lt;p>The server&amp;rsquo;s public keys for verifying digital signatures.&lt;/p>
+&lt;p>The object&amp;rsquo;s key is the algorithm and version combined (&lt;code>ed25519&lt;/code> being the
+algorithm and &lt;code>abc123&lt;/code> being the version in the example below). Together,
+this forms the Key ID. The version must have characters matching the regular
+expression &lt;code>[a-zA-Z0-9_]&lt;/code>.&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;h5 class="type no-numbers">Old Verify Key&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">expired_ts&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">integer&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>POSIX timestamp in milliseconds for when this key expired.&lt;/div>
+&lt;p>&lt;code class="nobreak">key&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>The &lt;a href="../appendices/#unpadded-base64">Unpadded base64&lt;/a> encoded key.&lt;/div>
+&lt;/div>
+&lt;h5 class="type no-numbers">Verify Key&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">key&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>The &lt;a href="../appendices/#unpadded-base64">Unpadded base64&lt;/a> encoded key.&lt;/div>
+&lt;/div>
+&lt;div class="highlight">&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">&lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;old_verify_keys&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:0ldk3y&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;expired_ts&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">1532645052628&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;key&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBzaG91bGQgYmUgeW91ciBvbGQga2V5J3MgZWQyNTUxOSBwYXlsb2FkLg&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">},&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;server_name&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;manga.example.com/v1&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;signatures&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;manga.example.com/v1&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:auto2&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBzaG91bGQgYWN0dWFsbHkgYmUgYSBzaWduYXR1cmU&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">},&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;valid_until_ts&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">1652262000000&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;verify_keys&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:abc123&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;key&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBzaG91bGQgYmUgYSByZWFsIGVkMjU1MTkgcGF5bG9hZA&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/details>
+&lt;/section>
+&lt;section class="rendered-data http-api POST">
+&lt;details open>
+&lt;summary>
+&lt;h3 id="posthttpsmangaexamplecomv1keysquery">
+&lt;span class="http-api-method POST">POST&lt;/span>
+&lt;span class="endpoint">https://manga.example.com/v1/keys/query&lt;/span>
+&lt;/h3>
+&lt;hr/>
+&lt;p>Query for keys from multiple servers in a batch format. If requested by a witness,
+the witness must sign the keys returned by the queried servers.&lt;/p>
+&lt;/summary>
+&lt;div class="basic-info">
+&lt;div class="bold">Rate-limited:&lt;/div>
+&lt;div>No&lt;/div>
+&lt;div class="bold">Requires authentication:&lt;/div>
+&lt;div>No&lt;/div>
+&lt;/div>
+&lt;hr/>
+&lt;h4 class="no-numbers">Request&lt;/h4>
+&lt;p>No request parameters or request body.&lt;/p>
+&lt;hr/>
+&lt;h4 class="no-numbers">Responses&lt;/h4>
+&lt;div class="statuses">
+&lt;span class="header">Status&lt;/span>
+&lt;span class="header">Description&lt;/span>
+&lt;p>&lt;code>200&lt;/code>&lt;/p>
+&lt;p>&lt;span>The keys for the queried servers, signed by the witness. Servers which
+are offline and have no cached keys will not be included in the result. This
+may result in an empty array.&lt;/span>&lt;/p>
+&lt;/div>
+&lt;h5 class="response no-numbers">200 Response&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">server_keys&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">Server Keys&lt;/code>&lt;/p>
+&lt;div>The queried server&amp;rsquo;s keys, signed by the witness.&lt;/div>
+&lt;/div>
+&lt;h5 class="type no-numbers">Server Keys&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">old_verify_keys&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">{ string: Old Verify Key}&lt;/code>&lt;/p>
+&lt;div>&lt;p>The public keys that the server used to use and when it stopped using them.&lt;/p>
+&lt;p>The object&amp;rsquo;s key is the algorithm and version combined (&lt;code>ed25519&lt;/code> being the
+algorithm and &lt;code>0ldK3y&lt;/code> being the version in the example below). Together,
+this forms the Key ID. The version must have characters matching the regular
+expression &lt;code>[a-zA-Z0-9_]&lt;/code>.&lt;/p>
+&lt;/div>
+&lt;p>&lt;code class="nobreak">server_name&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>DNS name of the homeserver.&lt;/div>
+&lt;p>&lt;code class="nobreak">signatures&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">Signatures&lt;/code>&lt;/p>
+&lt;div>&lt;p>Digital signatures for this object signed using the &lt;code>verify_keys&lt;/code>.&lt;/p>
+&lt;p>The signature is calculated using the process described at &lt;a href="../appendices/#signing-json">Signing JSON&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>&lt;code class="nobreak">valid_until_ts&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">integer&lt;/code>&lt;/p>
+&lt;div>&lt;p>POSIX timestamp when the list of valid keys should be refreshed. This field MUST
+be ignored in room versions 1, 2, 3, and 4. Keys used beyond this timestamp MUST
+be considered invalid, depending on the &lt;a href="../#room-versions">room version specification&lt;/a>.&lt;/p>
+&lt;p>Servers MUST use the lesser of this field and 7 days into the future when
+determining if a key is valid. This is to avoid a situation where an attacker
+publishes a key which is valid for a significant amount of time without a way
+for the homeserver owner to revoke it.&lt;/p>
+&lt;/div>
+&lt;p>&lt;code class="nobreak">verify_keys&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">{ string: Verify Key}&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>&lt;p>The server&amp;rsquo;s public keys for verifying digital signatures.&lt;/p>
+&lt;p>The object&amp;rsquo;s key is the algorithm and version combined (&lt;code>ed25519&lt;/code> being the
+algorithm and &lt;code>abc123&lt;/code> being the version in the example below). Together,
+this forms the Key ID. The version must have characters matching the regular
+expression &lt;code>[a-zA-Z0-9_]&lt;/code>.&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;h5 class="type no-numbers">Old Verify Key&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">expired_ts&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">integer&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>POSIX timestamp in milliseconds for when this key expired.&lt;/div>
+&lt;p>&lt;code class="nobreak">key&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>The &lt;a href="../appendices/#unpadded-base64">Unpadded base64&lt;/a> encoded key.&lt;/div>
+&lt;/div>
+&lt;h5 class="type no-numbers">Verify Key&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">key&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>The &lt;a href="../appendices/#unpadded-base64">Unpadded base64&lt;/a> encoded key.&lt;/div>
+&lt;/div>
+&lt;div class="highlight">&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">&lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;server_keys&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">[&lt;/span>
+&lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;old_verify_keys&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:0ldk3y&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;expired_ts&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">1532645052628&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;key&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBzaG91bGQgYmUgeW91ciBvbGQga2V5J3MgZWQyNTUxOSBwYXlsb2FkLg&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">},&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;server_name&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;manga.example.com/v1&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;signatures&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;cultured.manga.enjoyer/v1&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:010203&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBpcyBhbm90aGVyIHNpZ25hdHVyZQ&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">},&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;manga.example.com/v1&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:abc123&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBzaG91bGQgYWN0dWFsbHkgYmUgYSBzaWduYXR1cmU&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">},&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;valid_until_ts&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">1652262000000&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;verify_keys&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:abc123&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;key&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBzaG91bGQgYmUgYSByZWFsIGVkMjU1MTkgcGF5bG9hZA&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">]&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;/details>
+&lt;/section>
+&lt;section class="rendered-data http-api GET">
+&lt;details open>
+&lt;summary>
+&lt;h3 id="gethttpsmangaexamplecomv1keysqueryservername">
+&lt;span class="http-api-method GET">GET&lt;/span>
+&lt;span class="endpoint">https://manga.example.com/v1/keys/query/{serverName}&lt;/span>
+&lt;/h3>
+&lt;hr/>
+&lt;p>Query for another server&amp;rsquo;s keys. If requested by a witness, the witness must
+sign the keys returned by the queried server.&lt;/p>
+&lt;/summary>
+&lt;div class="basic-info">
+&lt;div class="bold">Rate-limited:&lt;/div>
+&lt;div>No&lt;/div>
+&lt;div class="bold">Requires authentication:&lt;/div>
+&lt;div>No&lt;/div>
+&lt;/div>
+&lt;hr/>
+&lt;h4 class="no-numbers">Request&lt;/h4>
+&lt;h5 class="no-numbers">Request parameters&lt;/h5>
+&lt;h5 class="type no-numbers">Path Parameters&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">serverName&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>The server&amp;rsquo;s DNS name to query&lt;/div>
+&lt;/div>
+&lt;h5 class="type no-numbers">Query Parameters&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">minimum_valid_until_ts&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">integer&lt;/code>&lt;/p>
+&lt;div>&lt;p>A POSIX timestamp in milliseconds indicating when the returned certificates
+will need to be valid until for it to be useful to the requesting server.&lt;/p>
+&lt;p>If not supplied, the current time as determined by the witness is used.&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;hr/>
+&lt;h4 class="no-numbers">Responses&lt;/h4>
+&lt;div class="statuses">
+&lt;span class="header">Status&lt;/span>
+&lt;span class="header">Description&lt;/span>
+&lt;p>&lt;code>200&lt;/code>&lt;/p>
+&lt;p>&lt;span>The keys for the server, or an empty array if the server could not be reached
+and no cached keys were available.&lt;/span>&lt;/p>
+&lt;/div>
+&lt;h5 class="response no-numbers">200 Response&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">server_keys&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">Server Keys&lt;/code>&lt;/p>
+&lt;div>The queried server&amp;rsquo;s keys, signed by the witness.&lt;/div>
+&lt;/div>
+&lt;h5 class="type no-numbers">Server Keys&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">old_verify_keys&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">{ string: Old Verify Key}&lt;/code>&lt;/p>
+&lt;div>&lt;p>The public keys that the server used to use and when it stopped using them.&lt;/p>
+&lt;p>The object&amp;rsquo;s key is the algorithm and version combined (&lt;code>ed25519&lt;/code> being the
+algorithm and &lt;code>0ldK3y&lt;/code> being the version in the example below). Together,
+this forms the Key ID. The version must have characters matching the regular
+expression &lt;code>[a-zA-Z0-9_]&lt;/code>.&lt;/p>
+&lt;/div>
+&lt;p>&lt;code class="nobreak">server_name&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>DNS name of the homeserver.&lt;/div>
+&lt;p>&lt;code class="nobreak">signatures&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">Signatures&lt;/code>&lt;/p>
+&lt;div>&lt;p>Digital signatures for this object signed using the &lt;code>verify_keys&lt;/code>.&lt;/p>
+&lt;p>The signature is calculated using the process described at &lt;a href="../appendices/#signing-json">Signing JSON&lt;/a>.&lt;/p>
+&lt;/div>
+&lt;p>&lt;code class="nobreak">valid_until_ts&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">integer&lt;/code>&lt;/p>
+&lt;div>&lt;p>POSIX timestamp when the list of valid keys should be refreshed. This field MUST
+be ignored in room versions 1, 2, 3, and 4. Keys used beyond this timestamp MUST
+be considered invalid, depending on the &lt;a href="../#room-versions">room version specification&lt;/a>.&lt;/p>
+&lt;p>Servers MUST use the lesser of this field and 7 days into the future when
+determining if a key is valid. This is to avoid a situation where an attacker
+publishes a key which is valid for a significant amount of time without a way
+for the homeserver owner to revoke it.&lt;/p>
+&lt;/div>
+&lt;p>&lt;code class="nobreak">verify_keys&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">{ string: Verify Key}&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>&lt;p>The server&amp;rsquo;s public keys for verifying digital signatures.&lt;/p>
+&lt;p>The object&amp;rsquo;s key is the algorithm and version combined (&lt;code>ed25519&lt;/code> being the
+algorithm and &lt;code>abc123&lt;/code> being the version in the example below). Together,
+this forms the Key ID. The version must have characters matching the regular
+expression &lt;code>[a-zA-Z0-9_]&lt;/code>.&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;h5 class="type no-numbers">Old Verify Key&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">expired_ts&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">integer&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>POSIX timestamp in milliseconds for when this key expired.&lt;/div>
+&lt;p>&lt;code class="nobreak">key&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>The &lt;a href="../appendices/#unpadded-base64">Unpadded base64&lt;/a> encoded key.&lt;/div>
+&lt;/div>
+&lt;h5 class="type no-numbers">Verify Key&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">key&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>The &lt;a href="../appendices/#unpadded-base64">Unpadded base64&lt;/a> encoded key.&lt;/div>
+&lt;/div>
+&lt;div class="highlight">&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">&lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;server_keys&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">[&lt;/span>
+&lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;old_verify_keys&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:0ldk3y&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;expired_ts&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">1532645052628&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;key&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBzaG91bGQgYmUgeW91ciBvbGQga2V5J3MgZWQyNTUxOSBwYXlsb2FkLg&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">},&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;server_name&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;manga.example.com/v1&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;signatures&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;cultured.manga.enjoyer/v1&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:010203&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBpcyBhbm90aGVyIHNpZ25hdHVyZQ&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">},&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;manga.example.com/v1&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:abc123&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBzaG91bGQgYWN0dWFsbHkgYmUgYSBzaWduYXR1cmU&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">},&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;valid_until_ts&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">1652262000000&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;verify_keys&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;ed25519:abc123&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;key&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;VGhpcyBzaG91bGQgYmUgYSByZWFsIGVkMjU1MTkgcGF5bG9hZA&amp;#34;&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">}&lt;/span>
+&lt;span style="color:#000;font-weight:bold">]&lt;/span>
 &lt;span style="color:#000;font-weight:bold">}&lt;/span>
 &lt;/code>&lt;/pre>&lt;/div>&lt;/details>
 &lt;/section></description></item><item><title>Docs: Example Page</title><link>/docs/getting-started/example-page/</link><pubDate>Thu, 05 Jan 2017 00:00:00 +0000</pubDate><guid>/docs/getting-started/example-page/</guid><description>
