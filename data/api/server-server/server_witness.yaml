@@ -29,8 +29,8 @@ paths:
             type: integer
             format: int64
           description: |-
-            A millisecond POSIX timestamp in milliseconds indicating when the returned
-            certificates will need to be valid until to be useful to the requesting server.
+            A POSIX timestamp in milliseconds indicating when the returned certificates
+            will need to be valid until for it to be useful to the requesting server.
 
             If not supplied, the current time as determined by the witness is used.
           required: false

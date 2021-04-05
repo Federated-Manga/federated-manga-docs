@@ -1,5 +1,9 @@
 @import "_variables_project.scss";
 
+body {
+  font-size: 14px;
+}
+
 /* Overrides for the navbar */
 .td-navbar {
   box-shadow: 0px 0px 8px rgba(179, 179, 179, 0.25);

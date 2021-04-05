@@ -26,9 +26,9 @@
       {{ if $simple_parameters }}
 {{ printf "<%v class=\"no-numbers\">Request parameters</%v>" $header2 $header2 | safeHTML}}
   
-          {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "header" "caption" "header parameters") }}
-          {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "path" "caption" "path parameters") }}
-          {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "query" "caption" "query parameters") }}
+          {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "header" "caption" "Header Parameters") }}
+          {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "path" "caption" "Path Parameters") }}
+          {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "query" "caption" "Query Parameters") }}
   
       {{ end }}
   

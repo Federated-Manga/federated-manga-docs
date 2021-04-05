@@ -3,7 +3,7 @@ title: "Server-Server API"
 linkTitle: "Server-Server API"
 weight: 9
 description: >
-  Establishes communication between servers.
+  Establishes communication between servers. Ideally, even mobile applications will use this.
 ---
 
 Federated Manga servers use the Server-Server APIs to communicate with each other.
@@ -56,9 +56,9 @@ The issue is further confounded by the fact that
 allows servers to act as a witness (aka notary), claiming to know the published signing key
 of an offline server. More witnesses will result in less *"dude trust me"*.
 
-It should be noted that the server hosting the original releases always has *"dude trust me"*.
+**NOTE:** The server hosting the original releases always has *"dude trust me"*.
 In other words, if multiple scanlation groups decide to congregate at a single server,
-all of them needs to give the server absolute trust.
+every group needs to give the server absolute trust.
 
 {{% http-api spec="server-server" api="server_keys" depth=3 %}}
 
