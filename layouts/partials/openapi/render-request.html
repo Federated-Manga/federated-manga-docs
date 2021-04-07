@@ -21,17 +21,13 @@
 
 {{ if $parameters }}
 
-    {{ $simple_parameters := where $parameters "in" "!=" "body"}}
+    {{ $simple_parameters := where $parameters "In" "!=" "body"}}
     {{ if $simple_parameters }}
 {{ printf "<%v class=\"no-numbers\">Request parameters</%v>" $header2 $header2 | safeHTML}}
-
-        {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "header" "caption" "Header Parameters") }}
-        {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "path" "caption" "Path Parameters") }}
-        {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "query" "caption" "Query Parameters") }}
-
+        {{ partial "openapi/render-endpoint" (dict "depth" $depth "parameters" $simple_parameters) }}
     {{ end }}
 
-    {{ $body_parameters := where $parameters "in" "body"}}
+    {{ $body_parameters := where $parameters "In" "body"}}
     {{ if $body_parameters }}
 {{ printf "<%v class=\"no-numbers\">Request Body</%v>" $header2 $header2 | safeHTML}}
 
@@ -54,17 +50,13 @@
             {{ $example_json := jsonify (dict "prefix" "  " "indent" "    ") $example }}
             {{ $example_json = replace $example_json "\\u003c" "<" }}
             {{ $example_json = replace $example_json "\\u003e" ">" | safeHTML }}
-
 ```json
 {{ $example_json }}
 ```
-
         {{ else }}
             {{ partial "alert" (dict "type" "warning" "omit_title" "true" "color" "warning" "content" "Specification error: Example invalid or not present") }}
         {{ end }}
-
     {{ end }}
-
 {{ else }}
 <p>No request parameters or request body.</p>
 {{ end }}

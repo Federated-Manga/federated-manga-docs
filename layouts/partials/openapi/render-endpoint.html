@@ -1,0 +1,36 @@
+{{/*
+
+    Render the parameters of a given type, given:
+  
+    * `parameters`: OpenAPI 3 data specifying the parameters
+  
+    This template renders a single table containing parameters of the given type.
+  
+  */}}
+  
+{{ $depth := .depth }}
+{{ $parameters := .parameters }}
+{{ $header := printf "h%v" (add $depth 1) }}
+{{ $header2 := printf "h%v" (add $depth 2) }}
+
+{{/* convert parameters into the format that render-object-table expects to see */}}
+<div class="properties">
+{{ range $parameter_ref := $parameters }}
+    {{ $parameter := $parameter_ref.Value}}
+    {{ $schema := $parameter.Schema }}
+    {{ $type := $parameter.Schema.Value.Type }}
+    {{ $description := $parameter.Description }}
+<span class="header">Name</span>
+
+<span class="header">Type</span>
+
+<span class="header">Description</span>
+
+<code class="nobreak">{{ $parameter.Name }}</code>
+
+<code class="nobreak">{{ $type }}</code>
+
+<div>{{ if $parameter.Required }}<strong>Required: </strong>{{end}}{{ $description | markdownify }}{{ if eq $type "enum"}}<p>One of: <code>{{ $parameter.Schema.Value.Enum }}</code>.</p>{{ end }}</div>
+
+{{ end }}
+</div>

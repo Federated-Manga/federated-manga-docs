@@ -38,9 +38,10 @@ paths:
         - in: path
           name: series_id
           schema:
+            title: Series ID
             type: string
-            description: |-
-              The ID of a manga series according to this server.
+          description: |-
+            The ID of a manga series according to this server.
           required: true
       responses:
         200:

@@ -26,12 +26,14 @@ components:
           example: "abc123"
         images:
           type: string
-          format: ipfsURI
+          title: IPFS URI
+          format: IPFS URI
           description: |-
             The IPFS URI leading to the actual image data for this
             release. Absolutely **do not** introduce new container formats
             just because you want to. **Fragmentation is not worth it.**
             You will break people's user experience.
+          example: "ipfs://QmZ4tDuvesekSs4qM5ZBKpXiZGun7S2CYtEZRB3DYXkjGx"
         server:
           type: string
           format: endpoint
