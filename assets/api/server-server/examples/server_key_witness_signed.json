@@ -1,10 +1,10 @@
 {
     "$ref": "server_key.json",
     "signatures": {
-        "manga.example.com/v1": {
+        "https://manga.example.com/v1": {
             "ed25519:abc123": "VGhpcyBzaG91bGQgYWN0dWFsbHkgYmUgYSBzaWduYXR1cmU"
         },
-        "cultured.manga.enjoyer/v1": {
+        "https://cultured.manga.enjoyer/v1": {
             "ed25519:010203": "VGhpcyBpcyBhbm90aGVyIHNpZ25hdHVyZQ"
         }
     }

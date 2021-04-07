@@ -1,0 +1,142 @@
+openapi: 3.0.3
+info:
+  title: "Federated Manga Load Balancer API"
+  version: "0.0.1"
+servers:
+- url: https://manga.example.com
+tags:
+- name: load-balancers
+  description: Applying to be a load balancer
+paths:
+  "/v1/load-balancer":
+    post:
+      tags:
+      - load-balancers
+      operationId: registerLoadBalancer
+      summary: Register an instance to become a load balancer
+      description: |-
+        Registers an instance for occasional polling to ensure that
+        it's catalogs are up-to-date. To be a load balancer, **the
+        instance must mirror the entire catalog.**
+        Adds the instance to `/.well-known/manga/servers` on success.
+        
+        Servers should validate that the request was sent by the
+        instance being registered.
+        
+        This is an idempotent operation.
+      requestBody:
+        description: The instance registration details
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Load Balancer Registration
+              properties:
+                server_name:
+                  type: string
+                  description: The instance to be registered.
+                  example: https://manga.example.com/v1
+      responses:
+        201:
+          description: |-
+            OK. Instance registered as Load Balancer.
+            Check to ensure instance 
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Registered Load Balancer
+                properties:
+                  server_name:
+                    type: string
+                    description: The instance that was registered.
+                    example: https://manga.example.com/v1
+  "/v1/load-balancer/{server_name}":
+    get:
+      tags:
+      - load-balancers
+      operationId: getLoadBalancer
+      summary: Get the registration status of an instance
+      description: |-
+        Returns state information of a registered instance.
+        Useful for debugging.
+        
+        Instances in a state other than `success` should not be
+        displayed in `/.well-known/manga/servers`
+      parameters:
+      - name: server_name
+        in: path
+        schema:
+          type: string
+        description: |-
+          The registered instance for lookup.
+          **Escape the input.**
+        example: https://manga.example.com/v1
+        required: true
+      responses:
+        200:
+          description: OK. Successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Load Balancer State
+                description: The current state of a registered instance.
+                properties:
+                  server_name:
+                    type: string
+                    description: The instance that was registered.
+                    example: https://manga.example.com/v1
+                  state:
+                    type: string
+                    description: The current state of the instance.
+                    enum:
+                    - pending
+                    - success
+                    - error
+                    - deleted
+                    example: error
+                  error:
+                    type: object
+                    description: Defined if `state == error`
+                    properties:
+                      error_code:
+                        type: string
+                        description: Code for ease of lookup
+                      message:
+                        type: string
+                        description: Detailed message of what went wrong
+                    example:
+                      {
+                        "error_code": "E100",
+                        "message": "Catalog is outdated."
+                      }
+                required:
+                - server_name
+                - state
+    delete:
+      tags:
+      - load-balancers
+      operationId: deleteLoadBalancer
+      summary: Delete an instance from the registry.
+      description: |-
+        Delete an instance from the registry. Stop polling it.
+        Remove it from `/.well-known/manga/servers`
+        
+        Servers should validate that the request was sent by the
+        instance being registered.
+        
+        This is an idempotent operation.
+      parameters:
+      - name: server_name
+        in: path
+        schema:
+          type: string
+        description: |-
+          The registered instance for lookup.
+          **Escape the input.**
+        example: https://manga.example.com/v1
+        required: true
+      responses:
+        204:
+          description: OK. Deletion confirmed.

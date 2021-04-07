@@ -11,7 +11,7 @@ components:
       description: Server Keys
       # TODO: replace with $ref: "../examples/server_key.json"
       example: {
-        "server_name": "manga.example.com/v1",
+        "server_name": "https://manga.example.com/v1",
         "verify_keys": {
           "ed25519:abc123": {
             "key": "VGhpcyBzaG91bGQgYmUgYSByZWFsIGVkMjU1MTkgcGF5bG9hZA"
@@ -24,7 +24,7 @@ components:
           }
         },
         "signatures": {
-          "manga.example.com/v1": {
+          "https://manga.example.com/v1": {
             "ed25519:auto2": "VGhpcyBzaG91bGQgYWN0dWFsbHkgYmUgYSBzaWduYXR1cmU"
           }
         },
@@ -34,7 +34,7 @@ components:
         server_name:
           type: string
           description: DNS name of the homeserver.
-          example: "example.org"
+          example: "https://example.org"
         verify_keys:
           type: object
           description: |-

@@ -1,5 +1,5 @@
 {
-    "server_name": "manga.example.com/v1",
+    "server_name": "https://manga.example.com/v1",
     "verify_keys": {
         "ed25519:abc123": {
             "key": "VGhpcyBzaG91bGQgYmUgYSByZWFsIGVkMjU1MTkgcGF5bG9hZA"
@@ -12,7 +12,7 @@
         }
     },
     "signatures": {
-        "manga.example.com/v1": {
+        "https://manga.example.com/v1": {
             "ed25519:auto2": "VGhpcyBzaG91bGQgYWN0dWFsbHkgYmUgYSBzaWduYXR1cmU"
         }
     },

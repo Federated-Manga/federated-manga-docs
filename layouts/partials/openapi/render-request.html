@@ -14,49 +14,48 @@
 {{ $depth := .depth }}
 {{ $operation_data := .operation_data }}
 {{ $parameters := .operation_data.Parameters }}
+{{ $request_body := .operation_data.RequestBody}}
 {{ $header := printf "h%v" (add $depth 1) }}
 {{ $header2 := printf "h%v" (add $depth 2) }}
 
 {{ printf "<%v class=\"no-numbers\">Request</%v>" $header $header | safeHTML}}
 
 {{ if $parameters }}
-
-    {{ $simple_parameters := where $parameters "In" "!=" "body"}}
+    {{ $simple_parameters := where $parameters ".Value.In" "!=" "body"}}
     {{ if $simple_parameters }}
-{{ printf "<%v class=\"no-numbers\">Request parameters</%v>" $header2 $header2 | safeHTML}}
+{{ printf "<%v class=\"no-numbers\">Request Parameters</%v>" $header2 $header2 | safeHTML}}
         {{ partial "openapi/render-endpoint" (dict "depth" $depth "parameters" $simple_parameters) }}
     {{ end }}
+{{ else }}
+<p>No request parameters.</p>
+{{ end }}
 
-    {{ $body_parameters := where $parameters "In" "body"}}
-    {{ if $body_parameters }}
+<hr/> 
+
+{{ if $request_body }}
 {{ printf "<%v class=\"no-numbers\">Request Body</%v>" $header2 $header2 | safeHTML}}
-
-        {{/* at most one body param is allowed by the spec */}}
-        {{ $body_parameter := index $body_parameters 0 }}
-        {{ $schema := partial "json-schema/resolve-refs" (dict "schema" $body_parameter.Schema.Value) }}
-        {{ $schema := $schema.schema}}
-        {{ $schema := partial "json-schema/resolve-allof" $schema }}
-
-        {{ $additional_types := partial "json-schema/resolve-additional-types" $schema }}
-        {{ $additional_types = uniq $additional_types }}
-        {{ range $additional_types }}
-            {{ partial "openapi/render-object-table" (dict "depth" $depth  "caption" .title "properties" .properties "required" .required) }}
+    {{ if index $request_body.Value.Content "application/json" }}
+        {{ $schema := index $request_body.Value.Content "application/json" }}
+        {{ $schema := $schema.Schema }}
+        {{ $out := partial "openapi/visit_schema" (dict "schema" $schema) }}
+        {{ $visited_schemas := $out.visited_schemas }}
+        {{ $compiled_example := $out.compiled_example }}
+        {{ if $visited_schemas}}
+            {{ partial "openapi/render-object-table" (dict "visited_schemas" $visited_schemas "depth" $depth) }}
         {{ end }}
+        {{ if $compiled_example }}
 
 {{ printf "<%v class=\"no-numbers\">Request Body Example</%v>" $header2 $header2 | safeHTML}}
-
-        {{ $example := partial "json-schema/resolve-example" $schema }}
-        {{ if $example }}
-            {{ $example_json := jsonify (dict "prefix" "  " "indent" "    ") $example }}
+            {{ $example_json := jsonify (dict "indent" "    ") $compiled_example }}
             {{ $example_json = replace $example_json "\\u003c" "<" }}
             {{ $example_json = replace $example_json "\\u003e" ">" | safeHTML }}
 ```json
 {{ $example_json }}
 ```
-        {{ else }}
-            {{ partial "alert" (dict "type" "warning" "omit_title" "true" "color" "warning" "content" "Specification error: Example invalid or not present") }}
         {{ end }}
+    {{ else }}
+        {{ partial "alert" (dict "type" "warning" "omit_title" "true" "color" "warning" "content" "Specification error: Example invalid or not present") }}
     {{ end }}
 {{ else }}
-<p>No request parameters or request body.</p>
+<p> No request body. </p>
 {{ end }}

@@ -64,6 +64,13 @@
         {{ end }}
 
         {{/*
+            If the property has a format, indicate this.
+        */}}
+        {{ if (and (eq $type "string") ($property.Value.Format)) }}
+            {{ $type = delimit (slice $type "as" $property.Value.Format) " " }}
+        {{ end }}
+
+        {{/*
             If the property uses `additionalProperties` to describe its
             internal structure, handle this.
         */}}

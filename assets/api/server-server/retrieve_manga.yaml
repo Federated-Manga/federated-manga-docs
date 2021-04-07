@@ -26,7 +26,35 @@ paths:
                 type: array
                 items:
                   $ref: 'definitions/manga_series.yaml#/components/schemas/MangaSeries'
-  "/v1/manga/series/{series_id}/chapters":
+  "/v1/manga/series/origin/{server_name}":
+    get:
+      tags:
+      - manga
+      summary: Query the manga catalog for series from a different server.
+      description: |-
+        Retrieve a subset of the catalog of manga series according to a different server.
+        Useful primarily for making use of load balancers, and validating that a load balancer
+        is up-to-date
+      operationId: getMangaSeriesFromOrigin
+      parameters:
+        - in: path
+          name: server_name
+          schema:
+            type: string
+          description: The server's DNS name to query. **Escape the input.**
+          required: true
+          example: https://manga.example.com/v1
+      responses:
+        200:
+          description: |-
+            The set of manga series meeting the results of the query.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'definitions/manga_series.yaml#/components/schemas/MangaSeries'
+  "/v1/manga/chapters":
     get:
       tags:
       - manga
@@ -35,7 +63,7 @@ paths:
         Retrieve a subset of the catalog of chapters for a manga series.
       operationId: getMangaSeriesChapters
       parameters:
-        - in: path
+        - in: query
           name: series_id
           schema:
             title: Series ID
@@ -52,8 +80,32 @@ paths:
               schema:
                 type: array
                 items:
-                  oneOf:
-                  - $ref: 'definitions/manga_chapter.yaml#/components/schemas/MangaChapter'
-                  - type: string
-                    format: ChapterID
-                    example: "def456"
+                  $ref: 'definitions/manga_chapter.yaml#/components/schemas/MangaChapter'
+  "/v1/manga/chapters/origin/{server_name}":
+    get:
+      tags:
+      - manga
+      summary: Query the manga catalog for chapters from a different server.
+      description: |-
+        Retrieve a subset of the catalog of manga chapters according to a different server.
+        Useful primarily for making use of load balancers, and validating that a load balancer
+        is up-to-date
+      operationId: getMangaChaptersFromOrigin
+      parameters:
+        - in: path
+          name: server_name
+          schema:
+            type: string
+          description: The server's DNS name to query. **Escape the input.**
+          required: true
+          example: https://manga.example.com/v1
+      responses:
+        200:
+          description: |-
+            The set of chapters for a manga series.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'definitions/manga_chapter.yaml#/components/schemas/MangaChapter'

@@ -26,7 +26,6 @@ components:
           example: "abc123"
         images:
           type: string
-          title: IPFS URI
           format: IPFS URI
           description: |-
             The IPFS URI leading to the actual image data for this

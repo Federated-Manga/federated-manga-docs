@@ -68,4 +68,23 @@ every group needs to give the server absolute trust.
 
 ## Retrieving Manga
 
+Federation between instances is simply copying entries from a catalog and maintaining a
+link to it's origin. This link is important for allowing users to verify the authenticity
+of a release, and for release groups to verify that load balancers and potential load balancers
+have the most up-to-date content.
+
 {{% http-api api="api/server-server/retrieve_manga.yaml" depth=3 %}}
+
+## Registering Load Balancers
+
+Instances can register themselves as load balancers for other instances.
+Usually to help distribute the catalog of a release group.
+
+Competent *(and rich)* release groups can handle their own load balancing using
+conventional techniques, such as multiple DNS records, HAProxy, or cloud services.
+
+NOTE: **This is not the same thing as load balancing the image database.**
+People who want to do that can simply run an instance, mirror the catalog, and seed without
+ever touching this feature.
+
+{{% http-api api="api/server-server/register_load_balancer.yaml" depth=3 %}}

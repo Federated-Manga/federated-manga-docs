@@ -17,7 +17,7 @@ components:
             $ref: "./keys.yaml#/components/schemas/ServerKeys"
           example: {
             # TODO: replace with $ref: "./examples/server_key_witness_signed.json"
-            "server_name": "manga.example.com/v1",
+            "server_name": "https://manga.example.com/v1",
             "verify_keys": {
               "ed25519:abc123": {
                 "key": "VGhpcyBzaG91bGQgYmUgYSByZWFsIGVkMjU1MTkgcGF5bG9hZA"
@@ -31,10 +31,10 @@ components:
             },
             "valid_until_ts": 1652262000000,
             "signatures": {
-              "manga.example.com/v1": {
+              "https://manga.example.com/v1": {
                 "ed25519:abc123": "VGhpcyBzaG91bGQgYWN0dWFsbHkgYmUgYSBzaWduYXR1cmU"
               },
-              "cultured.manga.enjoyer/v1": {
+              "https://cultured.manga.enjoyer/v1": {
                 "ed25519:010203": "VGhpcyBpcyBhbm90aGVyIHNpZ25hdHVyZQ"
               }
             }
