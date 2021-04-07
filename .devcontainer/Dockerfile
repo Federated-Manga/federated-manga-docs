@@ -1,6 +1,15 @@
 # Update the NODE_VERSION arg in docker-compose.yml to pick a Node version: 10, 12, 14
 ARG NODE_VERSION=14
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-${NODE_VERSION}
+
+FROM golang:buster AS go
+
+FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:${NODE_VERSION}
+
+COPY --from=go /usr/local/go /usr/local/go
+ENV PATH /home/node/go/bin:/usr/local/go/bin:$PATH
+
+
+ENV HUGO_BUILD_TAGS extended mage install
 
 # VARIANT can be either 'hugo' for the standard version or 'hugo_extended' for the extended version.
 ARG VARIANT=hugo_extended

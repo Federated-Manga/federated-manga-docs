@@ -3,7 +3,6 @@
     Render the request part of a single HTTP API operation, given:
   
     * `parameters`: OpenAPI 3 data specifying the parameters
-    * `path`: the path where this definition was found, to enable us to resolve "$ref"
   
     This template renders:
     * the "simple parameters" (header, path, query parameters)
@@ -12,60 +11,60 @@
   
   */}}
   
-  {{ $depth := .depth }}
-  {{ $parameters := .parameters }}
-  {{ $path := .path }}
-  {{ $header := printf "h%v" (add $depth 1) }}
-  {{ $header2 := printf "h%v" (add $depth 2) }}
-  
-  {{ printf "<%v class=\"no-numbers\">Request</%v>" $header $header | safeHTML}}
-  
-  {{ if $parameters }}
-  
-      {{ $simple_parameters := where $parameters "in" "!=" "body"}}
-      {{ if $simple_parameters }}
+{{ $depth := .depth }}
+{{ $operation_data := .operation_data }}
+{{ $parameters := .operation_data.Parameters }}
+{{ $header := printf "h%v" (add $depth 1) }}
+{{ $header2 := printf "h%v" (add $depth 2) }}
+
+{{ printf "<%v class=\"no-numbers\">Request</%v>" $header $header | safeHTML}}
+
+{{ if $parameters }}
+
+    {{ $simple_parameters := where $parameters "in" "!=" "body"}}
+    {{ if $simple_parameters }}
 {{ printf "<%v class=\"no-numbers\">Request parameters</%v>" $header2 $header2 | safeHTML}}
-  
-          {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "header" "caption" "Header Parameters") }}
-          {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "path" "caption" "Path Parameters") }}
-          {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "query" "caption" "Query Parameters") }}
-  
-      {{ end }}
-  
-      {{ $body_parameters := where $parameters "in" "body"}}
-      {{ if $body_parameters }}
+
+        {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "header" "caption" "Header Parameters") }}
+        {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "path" "caption" "Path Parameters") }}
+        {{ partial "openapi/render-parameters" (dict "depth" $depth "parameters" $simple_parameters "type" "query" "caption" "Query Parameters") }}
+
+    {{ end }}
+
+    {{ $body_parameters := where $parameters "in" "body"}}
+    {{ if $body_parameters }}
 {{ printf "<%v class=\"no-numbers\">Request Body</%v>" $header2 $header2 | safeHTML}}
-  
-          {{/* at most one body param is allowed by the spec */}}
-          {{ $body_parameter := index $body_parameters 0 }}
-          {{ $schema := partial "json-schema/resolve-refs" (dict "schema" $body_parameter.schema "path" $path) }}
-          {{ $schema := $schema.schema}}
-          {{ $schema := partial "json-schema/resolve-allof" $schema }}
-  
-          {{ $additional_types := partial "json-schema/resolve-additional-types" $schema }}
-          {{ $additional_types = uniq $additional_types }}
-          {{ range $additional_types }}
-              {{ partial "openapi/render-object-table" (dict "depth" $depth  "caption" .title "properties" .properties "required" .required) }}
-          {{ end }}
-  
+
+        {{/* at most one body param is allowed by the spec */}}
+        {{ $body_parameter := index $body_parameters 0 }}
+        {{ $schema := partial "json-schema/resolve-refs" (dict "schema" $body_parameter.Schema.Value) }}
+        {{ $schema := $schema.schema}}
+        {{ $schema := partial "json-schema/resolve-allof" $schema }}
+
+        {{ $additional_types := partial "json-schema/resolve-additional-types" $schema }}
+        {{ $additional_types = uniq $additional_types }}
+        {{ range $additional_types }}
+            {{ partial "openapi/render-object-table" (dict "depth" $depth  "caption" .title "properties" .properties "required" .required) }}
+        {{ end }}
+
 {{ printf "<%v class=\"no-numbers\">Request Body Example</%v>" $header2 $header2 | safeHTML}}
-  
-          {{ $example := partial "json-schema/resolve-example" $schema }}
-          {{ if $example }}
-              {{ $example_json := jsonify (dict "prefix" "  " "indent" "    ") $example }}
-              {{ $example_json = replace $example_json "\\u003c" "<" }}
-              {{ $example_json = replace $example_json "\\u003e" ">" | safeHTML }}
-  
-  ```json
-  {{ $example_json }}
-  ```
-  
-          {{ else }}
-              {{ partial "alert" (dict "type" "warning" "omit_title" "true" "color" "warning" "content" "Specification error: Example invalid or not present") }}
-          {{ end }}
-  
-      {{ end }}
-  
-  {{ else }}
-  <p>No request parameters or request body.</p>
-  {{ end }}
+
+        {{ $example := partial "json-schema/resolve-example" $schema }}
+        {{ if $example }}
+            {{ $example_json := jsonify (dict "prefix" "  " "indent" "    ") $example }}
+            {{ $example_json = replace $example_json "\\u003c" "<" }}
+            {{ $example_json = replace $example_json "\\u003e" ">" | safeHTML }}
+
+```json
+{{ $example_json }}
+```
+
+        {{ else }}
+            {{ partial "alert" (dict "type" "warning" "omit_title" "true" "color" "warning" "content" "Specification error: Example invalid or not present") }}
+        {{ end }}
+
+    {{ end }}
+
+{{ else }}
+<p>No request parameters or request body.</p>
+{{ end }}

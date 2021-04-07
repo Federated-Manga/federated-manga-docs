@@ -31,8 +31,10 @@ paths:
                       name:
                         type: string
                         description: Arbitrary name that identifies this implementation.
-                        example: "go-federated-manga"
                       version:
                         type: string
                         description: Version of this implementation. The version format depends on the implementation.
-                        example: "0.0.1"
+                    example: {
+                      "name": "go-federated-manga",
+                      "version": "0.0.1"
+                    }

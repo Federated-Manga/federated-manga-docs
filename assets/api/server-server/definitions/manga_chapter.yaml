@@ -1,0 +1,158 @@
+openapi: 3.0.3
+info:
+  title: "Federated Manga Retrieval API"
+  version: "0.0.1"
+paths: {}
+components:
+  schemas:
+    MangaChapter:
+      title: Manga Chapter
+      type: object
+      description: |-
+        The Manga Chapter according to this server, any intermediary 
+        servers, and the release server. To prevent obvious stack overflows,
+        the server should only send its own information and the release
+        server's information.
+      properties:
+        id:
+          type: string
+          format: ChapterID
+          description: The ID of this chapter according to this server.
+          example: "def456"
+        series_id:
+          type: string
+          format: SeriesID
+          description: The ID of the series according to this server.
+          example: "abc123"
+        images:
+          type: string
+          format: ipfsURI
+          description: |-
+            The IPFS URI leading to the actual image data for this
+            release. Absolutely **do not** introduce new container formats
+            just because you want to. **Fragmentation is not worth it.**
+            You will break people's user experience.
+        server:
+          type: string
+          format: endpoint
+          description: The server hosting this chapter.
+          example: https://manga.example.com/v1
+        origin:
+          description: |-
+            The Manga Chapter according to an intermediary or release server.
+          allOf:
+          - $ref: '#/components/schemas/MangaChapter'
+          example: {
+            "id": "bazbum",
+            "series_id": "foobar",
+            "images": "ipfs://QmZ4tDuvesekSs4qM5ZBKpXiZGun7S2CYtEZRB3DYXkjGx",
+            "server": "https://cultured.manga.enjoyer/v1",
+            "metadata": {
+              "en-US": {
+                "title": "Chapter 1",
+                "sort_id": 1
+              }
+            },
+            "signing_keys": {
+              "ed25519:1": "XSl0kuyvrXNj6A+7/tkrB9sxSbRi08Of5uRhxOqZtEQ"
+            },
+            "signatures": {
+              "ed25519:1": "ABCDEF..."
+            }
+          }
+        metadata:
+          type: object
+          description: |-
+            Non-authoratative metadata provided by this server to help with
+            disambiguation and aggregation. Keys are locales according to
+            [IETF RFC 5646](https://tools.ietf.org/html/rfc5646)
+            (e.g. en-US, ja-JP, zh-CN, ko-KR)
+          minProperties: 1
+          additionalProperties:
+            type: object
+            format: RFC5646
+            properties:
+              title:
+                type: string
+                description: |-
+                  The title of the chapter according to this server.
+                example: "Chapter 1: The Childhood of Reinhard von Müsel I"
+              sort_id:
+                type: integer
+                description: |-
+                  The sort ID of the chapter according to this server.
+                  Many groups will competitively release.
+                  Volume extras are often marked as `x.5` chapters.
+                format: int64
+                example: 1
+              alternative_titles:
+                type: array
+                items:
+                  type: string
+                example:
+                - "Chapter 1"
+              mangaupdates:
+                type: string
+                description: |-
+                  The ID of the chapter according to mangaupdates. Servers
+                  should be capable of pulling metadata from third party
+                  services, even though chapter metadata is vanishingly rare.
+                example: 19477
+              myanimelist:
+                type: string
+                description: |-
+                  The ID of the chapter according to myanimelist. Servers
+                  should be capable of pulling metadata from third party
+                  services, even though chapter metadata is vanishingly rare.
+                example: 6978
+            additionalProperties: True
+            required:
+            - title
+            - sort_id
+          example: {
+            "en-US": {
+              "title": "Chapter 1: The Childhood of Reinhard von Müsel I",
+              "sort_id": 1
+            }
+          }
+        signing_keys:
+          type: object
+          description: |-
+            The keys used to sign this object according to the
+            [JSON signing](../appendices/#signing-json) algorithm.
+            This field is included in signing.
+            At least one is required.
+            
+            Field keys refer to the signing key identifier.
+          minProperties: 1
+          additionalProperties:
+            type: string
+            description: The actual key.
+            example: "ABCDEF..."
+          example: {
+            "ed25519:1": "XSl0kuyvrXNj6A+7/tkrB9sxSbRi08Of5uRhxOqZtEQ"
+          }
+        signatures:
+          type: object
+          description: |-
+            The actual signature created by the
+            [JSON signing](../appendices/#signing-json) algorithm.
+            This field is not included in signing.
+            At least one is required.
+
+            Field keys refer to the signing key identifier.
+          minProperties: 1
+          additionalProperties:
+            type: string
+            description: The actual signature.
+            example: "ABCDEF..."
+          example: {
+            "ed25519:1": "ABCDEF..."
+          }
+      required:
+      - id
+      - series_id
+      - server
+      - metadata
+      - signing_keys
+      - signatures

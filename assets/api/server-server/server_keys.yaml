@@ -10,6 +10,8 @@ tags:
 paths:
   "/v1/keys":
     get:
+      tags:
+      - keys
       summary: Get the server's public key(s)
       description: |-
         Gets the server's published signing keys.
@@ -33,4 +35,4 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "definitions/keys.yaml"
+                $ref: "definitions/keys.yaml#/components/schemas/ServerKeys"

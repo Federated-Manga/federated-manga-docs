@@ -3,7 +3,6 @@
     Render the response part of a single HTTP API operation, given:
   
     * `responses`: OpenAPI data specifying the responses
-    * `path`: the path where this definition was found, to enable us to resolve "$ref"
   
     This template renders:
     * a summary of all the different responses
@@ -11,82 +10,48 @@
     * body parameters, which may be more complex, containing nested objects
     * response body examples
   
-  */}}
+*/}}
   
-  {{ $depth := .depth }}
-  {{ $responses := .responses }}
-  {{ $path := .path }}
-  {{ $header := printf "h%v" (add $depth 1) }}
-  {{ $header2 := printf "h%v" (add $depth 2) }}
-  
-  {{ printf "<%v class=\"no-numbers\">Responses</%v>" $header $header | safeHTML}}
-  
-  <div class="statuses">
-  <span class="header">Status</span>
-  <span class="header">Description</span>
+{{ $depth := .depth }}
+{{ $operation_data := .operation_data }}
+{{ $responses := .operation_data.Responses }}
+{{ $header := printf "h%v" (add $depth 1) }}
+{{ $header2 := printf "h%v" (add $depth 2) }}
 
-  {{ range $code, $response := $responses }}
-  <code>{{ $code }}</code>
+{{ printf "<%v class=\"no-numbers\">Responses</%v>" $header $header | safeHTML}}
 
-  <span>{{ $response.description | markdownify }}</span>
-  {{ end }}
-  </div>
-  
-  {{ range  $code, $response := $responses }}
-      {{ if index $response.content "application/json" }}
-          {{ $schema := index $response.content "application/json" }}
+<div class="statuses">
+<span class="header">Status</span>
+<span class="header">Description</span>
 
-          {{ $schema := partial "json-schema/resolve-refs" (dict "schema" $schema "path" $path) }}
-          {{ $schema := $schema.schema}}
-          {{ $schema := partial "json-schema/resolve-allof" $schema }}
-   
-          {{ if or $schema.properties (eq $schema.type "array") }}
-{{ printf "<%v class=\"response no-numbers\">%v Response</%v>" $header2 $code $header2 | safeHTML}}
-              {{/*
-                All this is to work out how to express the content of the response
-                in the case where it is an array.
-              */}}
-              {{ if eq $schema.type "array" }}
-                  {{ $type_of := "" }}
-                  {{ if reflect.IsSlice $schema.items }}
-                      {{ $types := slice }}
-                      {{ range $schema.items }}
-                          {{ if .title }}
-                              {{ $types = $types | append .title}}
-                          {{ else }}
-                              {{ $types = $types | append .type }}
-                          {{ end }}
-                      {{ end }}
-                      {{ $type_of = delimit $types ", "}}
-                  {{ else }}
-                      {{ $type_of = $schema.items.title }}
-                  {{ end }}
-  <p>Array of <code>{{ $type_of }}</code>.</p>
-              {{ end }}
+{{ range $code, $response := $responses }}
+<code>{{ $code }}</code>
 
-              {{ $additional_types := partial "json-schema/resolve-additional-types" $schema }}
-              {{ $additional_types = uniq $additional_types }}
-              {{ range $additional_types }}
-                  {{ partial "openapi/render-object-table" (dict "depth" $depth "caption" .title "properties" .properties "required" .required) }}
-              {{ end }}
-              {{ $example := partial "json-schema/resolve-example" $schema }}
-              {{ if $response.examples }}
-                  {{ $example = partial "json-schema/resolve-refs" (dict "schema" $response.examples "path" $path) }}
-                  {{ $example = index $example "application/json" }}
-              {{ end }}
+<span>{{ $response.Value.Description | markdownify }}</span>
+{{ end }}
+</div>
 
-              {{ if $example }}
-                  {{ $example_json := jsonify (dict "prefix" "  " "indent" "    ") $example }}
-                  {{ $example_json = replace $example_json "\\u003c" "<" }}
-                  {{ $example_json = replace $example_json "\\u003e" ">" | safeHTML }}
-  
-  ```json
-  {{ $example_json }}
-  ```
-  
-              {{ else }}
-                  {{ partial "alert" (dict "type" "warning" "omit_title" "true" "color" "warning" "content" "Specification error: Example invalid or not present") }}
-              {{ end }}
-          {{ end }}
-      {{ end }}
-  {{ end }}
+
+
+{{ range  $code, $response := $responses }}
+    {{ if index $response.Value.Content "application/json" }}
+        {{ $schema := index $response.Value.Content "application/json" }}
+        {{ $schema := $schema.Schema }}
+        {{ $out := partial "openapi/visit_schema" (dict "schema" $schema) }}
+        {{ $visited_schemas := $out.visited_schemas }}
+        {{ $compiled_example := $out.compiled_example }}
+<hr/>
+<h6 class="response no-numbers"><code>{{$code}}</code> Response</h6>
+        {{ if $visited_schemas}}
+            {{ partial "openapi/render-object-table" (dict "visited_schemas" $visited_schemas "depth" $depth) }}
+        {{ end }}
+        {{ if $compiled_example }}
+            {{ $example_json := jsonify (dict "indent" "    ") $compiled_example }}
+            {{ $example_json = replace $example_json "\\u003c" "<" }}
+            {{ $example_json = replace $example_json "\\u003e" ">" | safeHTML }}
+```json
+{{ $example_json }}
+```
+        {{ end }}
+    {{ end }}
+{{ end }}

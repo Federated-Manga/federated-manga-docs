@@ -10,10 +10,13 @@ tags:
 paths:
   "/v1/keys/query/{serverName}":
     get:
+      tags:
+      - keys
       summary: Query for another server's keys
       description: |-
         Query for another server's keys. If requested by a witness, the witness must
-        sign the keys returned by the queried server.
+        sign the keys returned by the queried server. Most likely, the witness will either
+        be a well-known volunteer load balancer, or another mirror.
       operationId: perspectivesKeyQuery
       parameters:
         - in: path
@@ -43,9 +46,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "definitions/keys_query_response.yaml"
+                $ref: "definitions/keys_query_response.yaml#/components/schemas/WitnessedServerKeys"
   "/v1/keys/query":
     post:
+      tags:
+      - keys
       summary: Query for several server's keys
       description: |-
         Query for keys from multiple servers in a batch format.  If requested by a witness,
@@ -110,4 +115,4 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "definitions/keys_query_response.yaml"
+                $ref: "definitions/keys_query_response.yaml#/components/schemas/WitnessedServerKeys"

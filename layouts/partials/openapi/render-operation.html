@@ -16,42 +16,41 @@
 			* request details
 			* response details
 	
-	*/}}
+*/}}
 	
-	{{ $depth := .depth }}
-	{{ $method := .method }}
-	{{ $endpoint := .endpoint }}
-	{{ $operation_data := .operation_data }}
-	{{ $path := .path }}
-    {{ $header := printf "h%v" $depth }}
+{{ $depth := .depth }}
+{{ $method := .method }}
+{{ $endpoint := .endpoint }}
+{{ $operation_data := .operation_data }}
+{{ $header := printf "h%v" $depth }}
 {{/* no formatting because markdown */}}
 <section class="rendered-data http-api {{ $method }}">
 <details {{ if not site.Params.ui.rendered_data_collapsed }}open{{ end }}>
 <summary>
 {{ printf "<%v id=\"%v%v\">" $header (lower $method) (anchorize $endpoint) | safeHTML}}
 <span class="http-api-method {{ $method }}">{{ $method }}</span>
-<span class="endpoint{{ if $operation_data.deprecated }} deprecated-inline{{ end }}">{{ $endpoint }}</span>
+<span class="endpoint{{ if $operation_data.Deprecated }} deprecated-inline{{ end }}">{{ $endpoint }}</span>
 {{ printf "</%v>" $header | safeHTML}}
 <hr/>
 
-{{ if $operation_data.deprecated }}
-{{ partial "alert" (dict "type" "warning" "omit_title" "true" "content" "This API is deprecated and will be removed from a future release.") }}
+{{ if $operation_data.Deprecated }}
+	{{ partial "alert" (dict "type" "warning" "omit_title" "true" "content" "This API is deprecated and will be removed from a future release.") }}
 {{ end }}
 
-<p>{{ $operation_data.description | markdownify }}</p>
+<p>{{ $operation_data.Description | markdownify }}</p>
 </summary>
 
 <div class="basic-info">
 <div class="bold">Rate-limited:</div>
-{{ $rate_limited := index $operation_data.responses "429" }}
+{{ $rate_limited := index $operation_data.Responses "429" }}
 <div>{{ if $rate_limited }}Yes{{ else }}No{{ end }}</div>
 <div class="bold">Requires authentication:</div>
-<div>{{ if $operation_data.security }}Yes{{ else }}No{{ end }}</div>
+<div>{{ if $operation_data.Security }}Yes{{ else }}No{{ end }}</div>
 </div>
 
 <hr/>
-{{ partial "openapi/render-request"   (dict "depth" $depth "parameters" $operation_data.parameters "path" $path) }}
+{{ partial "openapi/render-request"   (dict "depth" $depth "operation_data" $operation_data) }}
 <hr/>
-{{ partial "openapi/render-responses" (dict "depth" $depth "responses"  $operation_data.responses  "path" $path) }}
+{{ partial "openapi/render-responses" (dict "depth" $depth "operation_data" $operation_data) }}
 </details>
 </section>

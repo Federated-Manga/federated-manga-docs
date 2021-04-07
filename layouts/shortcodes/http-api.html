@@ -4,23 +4,21 @@
   
     It expects to be passed two parameters:
   
-    * a `spec` parameter identifying the spec, which must be the name of
-    a directory under /api
-    * an `api` parameter, identifying an OpenAPI 3 definition,
-    which is the name of a schema file under "api/$spec".
-    The file extension is omitted. For example:
-  
-        {{% http-api spec="server-server" api="public_rooms" %}}
-  
-  */}}
-  
-  
-  {{ $spec := .Params.spec}}
-  {{ $api := .Params.api}}
-  {{ $depth := default 4 .Params.depth }}
+    * the `api` parameter, identifying an OpenAPI 3 definition,
+    which is the name of a schema file under "assets/".
+    For example:
+    * `depth`: the depth to set the <h*> tags for ToC rendering
 
-  {{ $api_data := index .Site.Data.api $spec $api }}
-  {{ $server := index $api_data.servers 0 "url" }}
-  {{ $path := delimit (slice "api" $spec) "/" }}
-  {{ partial "openapi/render-api" (dict "api_data" $api_data "server" $server "path" $path "depth" $depth) }}
+        {{% http-api api="api/server-server/retrieve_manga.yaml" depth=4 %}}
   
+    Note that external references are not allowed, i.e. $ref: ./definitions/foobar.yaml
+    See https://github.com/gohugoio/hugo/issues/8067
+  */}}
+
+{{ $api := .Params.api}}
+{{ $depth := default 4 .Params.depth }}
+
+{{ $api_data := resources.Get $api | openapi3.Unmarshal }}
+{{ $server := (index $api_data.Servers 0).URL}}
+
+{{ partial "openapi/render-api" (dict "api_data" $api_data "server" $server "depth" $depth) }}

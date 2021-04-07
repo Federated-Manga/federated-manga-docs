@@ -1,0 +1,41 @@
+openapi: 3.0.3
+info:
+  title: "Federated Manga Retrieval API"
+  version: "0.0.1"
+paths: {}
+components:
+  schemas:
+    WitnessedServerKeys:
+      title: Witnessed Server Keys
+      type: object
+      description: Server Keys signed by a Witness
+      properties:
+        server_keys:
+          type: array
+          description: The queried server's keys, signed by the witness.
+          items:
+            $ref: "./keys.yaml#/components/schemas/ServerKeys"
+          example: {
+            # TODO: replace with $ref: "./examples/server_key_witness_signed.json"
+            "server_name": "manga.example.com/v1",
+            "verify_keys": {
+              "ed25519:abc123": {
+                "key": "VGhpcyBzaG91bGQgYmUgYSByZWFsIGVkMjU1MTkgcGF5bG9hZA"
+              }
+            },
+            "old_verify_keys": {
+              "ed25519:0ldk3y": {
+              "expired_ts": 1532645052628,
+                "key": "VGhpcyBzaG91bGQgYmUgeW91ciBvbGQga2V5J3MgZWQyNTUxOSBwYXlsb2FkLg"
+              }
+            },
+            "valid_until_ts": 1652262000000,
+            "signatures": {
+              "manga.example.com/v1": {
+                "ed25519:abc123": "VGhpcyBzaG91bGQgYWN0dWFsbHkgYmUgYSBzaWduYXR1cmU"
+              },
+              "cultured.manga.enjoyer/v1": {
+                "ed25519:010203": "VGhpcyBpcyBhbm90aGVyIHNpZ25hdHVyZQ"
+              }
+            }
+          }

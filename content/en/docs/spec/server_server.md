@@ -9,7 +9,9 @@ description: >
 Federated Manga servers use the Server-Server APIs to communicate with each other.
 Servers use these APIs to push catalog changes to each other in real-time, and to retrieve
 older catalog entries from each other. Much of the design is borrowed from the [Matrix project](https://matrix.org)
-and has simply been adapted for use with manga distribution.
+and has simply been adapted for use with manga distribution. One key difference is that the
+Server-Server (Federation) API should also be used by (e.g. mobile) clients for the health
+of the network, to reduce the impact of having a large proportion of leechers.
 
 ## Server Discovery
 
@@ -36,11 +38,11 @@ Much of this work would be completely deprecated by a competent fully P2P design
 Never forget that **whatever we make needs to be usable by those with no technical expertise**.
 Until we have a design revelation, this is the compromise we need to work with.
 
-{{% http-api spec="server-server" api="wellknown" %}}
+{{% http-api api="api/server-server/wellknown.yaml" %}}
 
 ## Server Implementation
 
-{{% http-api spec="server-server" api="version" depth=3 %}}
+{{% http-api api="api/server-server/version.yaml" depth=3 %}}
 
 ## Signing Keys
 
@@ -60,6 +62,10 @@ of an offline server. More witnesses will result in less *"dude trust me"*.
 In other words, if multiple scanlation groups decide to congregate at a single server,
 every group needs to give the server absolute trust.
 
-{{% http-api spec="server-server" api="server_keys" depth=3 %}}
+{{% http-api api="api/server-server/server_keys.yaml" depth=3 %}}
 
-{{% http-api spec="server-server" api="server_witness" depth=3 %}}
+{{% http-api api="api/server-server/server_witness.yaml" depth=3 %}}
+
+## Retrieving Manga
+
+{{% http-api api="api/server-server/retrieve_manga.yaml" depth=3 %}}

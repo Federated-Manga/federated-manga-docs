@@ -1,0 +1,65 @@
+{{/*
+
+    Recursively adds all of the schemas to the dictionary of visited schemas.
+    Avoids infinite loops.
+  
+    * `visited_schemas`: The dictionary of already visited schemas.
+    * `schema`: The schema to visit
+
+*/}}
+
+{{ $visited_schemas := .visited_schemas | default dict }}
+{{ $compiled_example := .compiled_example | default dict }}
+{{ $schema := .schema }}
+
+{{ if not (index $visited_schemas $schema.Value.Title) }}
+    {{ if $schema.Value.Title}}
+        {{ $visited_schemas = merge $visited_schemas (dict $schema.Value.Title $schema.Value) }}
+    {{ end }}
+    {{ range $entry := $schema.Value.OneOf}}
+        {{ $out := partial "openapi/visit_schema" (dict "visited_schemas" $visited_schemas "compiled_example" $compiled_example "schema" $entry) }}
+        {{ $visited_schemas = $out.visited_schemas }}
+        {{ $compiled_example = $out.compiled_example }}
+    {{ end }}
+    {{ range $entry := $schema.Value.AnyOf}}
+        {{ $out := partial "openapi/visit_schema" (dict "visited_schemas" $visited_schemas "compiled_example" $compiled_example "schema" $entry) }}
+        {{ $visited_schemas = $out.visited_schemas }}
+        {{ $compiled_example = $out.compiled_example }}
+    {{ end }}
+    {{ range $entry := $schema.Value.AllOf}}
+        {{ $out := partial "openapi/visit_schema" (dict "visited_schemas" $visited_schemas "compiled_example" $compiled_example "schema" $entry) }}
+        {{ $visited_schemas = $out.visited_schemas }}
+        {{ $compiled_example = $out.compiled_example }}
+    {{ end }}
+    {{ if $schema.Value.Not }}
+        {{ $out := partial "openapi/visit_schema" (dict "visited_schemas" $visited_schemas "compiled_example" $compiled_example "schema" $schema.Value.Not) }}
+        {{ $visited_schemas = $out.visited_schemas }}
+        {{ $compiled_example = $out.compiled_example }}
+    {{ end }}
+
+    {{ if eq $schema.Value.Type "array" }}
+        {{ $items := $schema.Value.Items}}
+        {{ $out := partial "openapi/visit_schema" (dict "visited_schemas" $visited_schemas "compiled_example" $compiled_example "schema" $items) }}
+        {{ $visited_schemas = $out.visited_schemas }}
+        {{ $compiled_example = $out.compiled_example }}
+    {{ else if eq $schema.Value.Type "object" }}
+        {{ $properties_example := dict }}
+        {{ range $property_name, $property := $schema.Value.Properties }}
+            {{ $out := partial "openapi/visit_schema" (dict "visited_schemas" $visited_schemas "schema" $property) }}
+            {{ $visited_schemas = $out.visited_schemas }}
+            {{ if eq $property.Value.Type "array"}}
+                {{ $properties_example = merge $properties_example (dict $property_name (slice $property.Value.Example)) }}
+            {{ else }}
+                {{ $properties_example = merge $properties_example (dict $property_name $property.Value.Example) }}
+            {{ end }}
+        {{ end }}
+        {{ if $schema.Value.AdditionalProperties }}
+            {{ $out := partial "openapi/visit_schema" (dict "visited_schemas" $visited_schemas "schema" $schema.Value.AdditionalProperties) }}
+            {{ $visited_schemas = $out.visited_schemas }}
+            {{ $properties_example = merge $properties_example $out.compiled_example }}
+        {{ end }}
+        {{ $compiled_example = merge $compiled_example $properties_example}}
+    {{ end }}
+{{ end }}
+
+{{ return (dict "visited_schemas" $visited_schemas "compiled_example" $compiled_example) }}

@@ -1,0 +1,58 @@
+openapi: 3.0.3
+info:
+  title: "Federated Manga Retrieval API"
+  version: "0.0.1"
+servers:
+- url: https://manga.example.com
+tags:
+- name: manga
+  description: Retrieving manga from the server
+paths:
+  "/v1/manga/series":
+    get:
+      tags:
+      - manga
+      summary: Query the manga catalog for series.
+      description: |-
+        Retrieve a subset of the catalog of manga series.
+      operationId: getMangaSeries
+      responses:
+        200:
+          description: |-
+            The set of manga series meeting the results of the query.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'definitions/manga_series.yaml#/components/schemas/MangaSeries'
+  "/v1/manga/series/{series_id}/chapters":
+    get:
+      tags:
+      - manga
+      summary: Query the manga catalog for chapters of a series.
+      description: |-
+        Retrieve a subset of the catalog of chapters for a manga series.
+      operationId: getMangaSeriesChapters
+      parameters:
+        - in: path
+          name: series_id
+          schema:
+            type: string
+            description: |-
+              The ID of a manga series according to this server.
+          required: true
+      responses:
+        200:
+          description: |-
+            The set of chapters for a manga series.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                  - $ref: 'definitions/manga_chapter.yaml#/components/schemas/MangaChapter'
+                  - type: string
+                    format: ChapterID
+                    example: "def456"

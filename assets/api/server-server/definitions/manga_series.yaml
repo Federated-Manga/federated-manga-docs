@@ -1,0 +1,142 @@
+openapi: 3.0.3
+info:
+  title: "Federated Manga Retrieval API"
+  version: "0.0.1"
+paths: {}
+components:
+  schemas:
+    MangaSeries:
+      title: Manga Series
+      type: object
+      description: |-
+        The Manga Series according to this server, any intermediary servers,
+        and the release server. To prevent obvious stack overflows,
+        the server should only send its own information and the release
+        server's information.
+
+        `metadata` should be defined for at least one language.
+        
+        `origin` is not provided for the originating release servers.
+      properties:
+        id:
+          type: string
+          description: The ID of the series according to this server.
+          example: "abc123"
+        server:
+          type: string
+          format: endpoint
+          description: foobar
+          example: https://manga.example.com/v1
+        origin:
+          description: |-
+            The Manga Series according to an intermediary or release server.
+          allOf:
+          - $ref: '#/components/schemas/MangaSeries'
+          example: {
+            "id": "foobar",
+            "server": "https://cultured.manga.enjoyer/v1",
+            "metadata": {
+              "en-US": {
+                "title": "Legend of the Galactic Heroes"
+              }
+            },
+            "signing_keys": {
+              "ed25519:1": "XSl0kuyvrXNj6A+7/tkrB9sxSbRi08Of5uRhxOqZtEQ"
+            },
+            "signatures": {
+              "ed25519:key1": "ABCDEF..."
+            } 
+          }
+        metadata:
+          type: object
+          description: |-
+            Non-authoratative metadata provided by this server to help with
+            disambiguation and aggregation. Keys are locales according to
+            [IETF RFC 5646](https://tools.ietf.org/html/rfc5646)
+            (e.g. en-US, ja-JP, zh-CN, ko-KR)
+          minProperties: 1
+          additionalProperties:
+            type: object
+            format: RFC5646
+            properties:
+              title:
+                type: string
+                example: "Legend of the Galactic Heroes"
+              alternative-titles:
+                type: array
+                items:
+                  type: string
+                example:
+                - Ginga Eiyuu Densetsu
+                - LOGH
+                - 銀河英雄伝説
+              mangaupdates:
+                type: string
+                description: |-
+                  The ID of the series according to mangaupdates. Servers
+                  should be capable of pulling metadata from third party
+                  services.
+                example: 19477
+              myanimelist:
+                type: string
+                description: |-
+                  The ID of the series according to myanimelist. Servers
+                  should be capable of pulling metadata from third party
+                  services.
+                example: 6978
+            additionalProperties: True
+            required:
+            - title
+          example: {
+            "en-US": {
+              "title": "Legend of the Galactic Heroes",
+              "alternative-titles": [
+                "Ginga Eiyuu Densetsu",
+                "LOGH",
+                "銀河英雄伝説"
+              ],
+              "author": "Katsumi Michihara",
+              "mangaupdates": "19477",
+              "myanimelist": "6978"
+            }
+          }
+        signing_keys:
+          type: object
+          description: |-
+            The keys used to sign this object according to the
+            [JSON signing](../appendices/#signing-json) algorithm.
+            This field is included in signing.
+            At least one is required.
+            
+            Field keys refer to the signing key identifier.
+          minProperties: 1
+          additionalProperties:
+            type: string
+            description: The actual key.
+            example: "ABCDEF..."
+          example: {
+            "ed25519:1": "XSl0kuyvrXNj6A+7/tkrB9sxSbRi08Of5uRhxOqZtEQ"
+          }
+        signatures:
+          type: object
+          description: |-
+            The actual signature created by the
+            [JSON signing](../appendices/#signing-json) algorithm.
+            This field is not included in signing.
+            At least one is required.
+
+            Field keys refer to the signing key identifier.
+          minProperties: 1
+          additionalProperties:
+            type: string
+            description: The actual signature.
+            example: "ABCDEF..."
+          example: {
+            "ed25519:1": "ABCDEF..."
+          }
+      required:
+      - id
+      - server
+      - metadata
+      - signing_keys
+      - signatures
