@@ -2,7 +2,32 @@
 &lt;h2 id="unpadded-base64">Unpadded Base64&lt;/h2>
 &lt;p>See the &lt;a href="https://matrix.org/docs/spec/appendices#unpadded-base64">Matrix protocol&lt;/a>&lt;/p>
 &lt;h2 id="signing-json">Signing JSON&lt;/h2>
-&lt;p>See the &lt;a href="https://matrix.org/docs/spec/appendices#signing-json">Matrix protocol&lt;/a>&lt;/p></description></item><item><title>Docs: Server-Server API</title><link>/docs/spec/server_server/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/spec/server_server/</guid><description>
+&lt;p>See the &lt;a href="https://matrix.org/docs/spec/appendices#signing-json">Matrix protocol&lt;/a>&lt;/p></description></item><item><title>Docs: Client-Server API</title><link>/docs/spec/client_server/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/spec/client_server/</guid><description>
+&lt;p>The Client-Server API is a simple lightweight API, allowing clients to perform read and write
+operations tied to a user&amp;rsquo;s identity. The primary difference between a lightweight client
+and a heavyweight client is the amount of image data being stored and seeded.&lt;/p>
+&lt;p>An ideal mobile client is capable of aggregating together the catalogs of multiple release groups,
+&lt;strong>while seeding.&lt;/strong> Seeding may be enabled or disabled depending on VPN and data roaming settings.
+This is a full instance, even though it does not expose a Server-Server API and cannot be found using DNS.
+These are definitely &lt;strong>single-user instances.&lt;/strong>&lt;/p>
+&lt;p>An ideal desktop client is similar, though it may expose a Server-Server API and can be found using DNS.
+They will probably &lt;strong>expose a web-based front-end&lt;/strong> on the local network.&lt;/p>
+&lt;p>An ideal server client &lt;strong>must&lt;/strong> expose a Server-Server API and &lt;strong>must&lt;/strong> be found using DNS.
+Whether they expose a front-end over the internet is up to admin discretion.
+These are most likely &lt;strong>multi-user instances.&lt;/strong>&lt;/p>
+&lt;p>In other words, they are all pretty much the same.&lt;/p>
+&lt;p>This API is a work in progress to determine the pros and cons of regular user accounts versus
+federated identity (Third Party Identifiers).&lt;/p>
+&lt;h3 id="retrieving-individual-images">Retrieving Individual Images?&lt;/h3>
+&lt;p>For the health of the network, we have decided not to standardize an endpoint that would encourage
+leeching behavior. We also don&amp;rsquo;t want to presume we know what image formats people want to use, or
+if images are even appropriate at all.&lt;/p>
+&lt;ul>
+&lt;li>Horrors have jump scares.&lt;/li>
+&lt;li>Some comics have background music.&lt;/li>
+&lt;li>Some comics are literal videos.&lt;/li>
+&lt;li>Some release groups prevent scraping by showing a picture of Jesus before loading the actual image.&lt;/li>
+&lt;/ul></description></item><item><title>Docs: Server-Server API</title><link>/docs/spec/server_server/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/docs/spec/server_server/</guid><description>
 &lt;p>Federated Manga servers use the Server-Server APIs to communicate with each other.
 Servers use these APIs to push catalog changes to each other in real-time, and to retrieve
 older catalog entries from each other. Much of the design is borrowed from the &lt;a href="https://matrix.org">Matrix project&lt;/a>
