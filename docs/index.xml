@@ -396,6 +396,23 @@ be a well-known volunteer load balancer, or another mirror.&lt;/p>
 &lt;hr/>
 &lt;h4 class="no-numbers">Request&lt;/h4>
 &lt;h5 class="no-numbers">Request parameters&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">serverName&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>The server&amp;rsquo;s DNS name to query&lt;/div>
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">minimum_valid_until_ts&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">integer&lt;/code>&lt;/p>
+&lt;div>&lt;p>A POSIX timestamp in milliseconds indicating when the returned certificates
+will need to be valid until for it to be useful to the requesting server.&lt;/p>
+&lt;p>If not supplied, the current time as determined by the witness is used.&lt;/p>
+&lt;/div>
+&lt;/div>
 &lt;hr/>
 &lt;h4 class="no-numbers">Responses&lt;/h4>
 &lt;div class="statuses">
@@ -632,6 +649,14 @@ At least one is required.&lt;/p>
 &lt;hr/>
 &lt;h4 class="no-numbers">Request&lt;/h4>
 &lt;h5 class="no-numbers">Request parameters&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;p>&lt;code class="nobreak">series_id&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;div>&lt;strong>Required: &lt;/strong>The ID of a manga series according to this server.&lt;/div>
+&lt;/div>
 &lt;hr/>
 &lt;h4 class="no-numbers">Responses&lt;/h4>
 &lt;div class="statuses">
@@ -642,6 +667,12 @@ At least one is required.&lt;/p>
 &lt;/div>
 &lt;hr/>
 &lt;h6 class="response no-numbers">&lt;code>200&lt;/code> Response&lt;/h6>
+&lt;h5 class="type no-numbers">IPFS URI&lt;/h5>
+&lt;div class="properties">
+&lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Type&lt;/span>&lt;/p>
+&lt;p>&lt;span class="header">Description&lt;/span>&lt;/p>
+&lt;/div>
 &lt;h5 class="type no-numbers">Manga Chapter&lt;/h5>
 &lt;div class="properties">
 &lt;p>&lt;span class="header">Name&lt;/span>&lt;/p>
@@ -651,7 +682,7 @@ At least one is required.&lt;/p>
 &lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
 &lt;div>&lt;strong>Required: &lt;/strong>The ID of this chapter according to this server.&lt;/div>
 &lt;p>&lt;code class="nobreak">images&lt;/code>&lt;/p>
-&lt;p>&lt;code class="nobreak">string&lt;/code>&lt;/p>
+&lt;p>&lt;code class="nobreak">IPFS URI&lt;/code>&lt;/p>
 &lt;div>The IPFS URI leading to the actual image data for this
 release. Absolutely &lt;strong>do not&lt;/strong> introduce new container formats
 just because you want to. &lt;strong>Fragmentation is not worth it.&lt;/strong>
@@ -690,7 +721,7 @@ At least one is required.&lt;/p>
 &lt;/div>
 &lt;div class="highlight">&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-json" data-lang="json">&lt;span style="color:#000;font-weight:bold">{&lt;/span>
 &lt;span style="color:#204a87;font-weight:bold">&amp;#34;id&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;def456&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
-&lt;span style="color:#204a87;font-weight:bold">&amp;#34;images&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#204a87;font-weight:bold">null&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
+&lt;span style="color:#204a87;font-weight:bold">&amp;#34;images&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#4e9a06">&amp;#34;ipfs://QmZ4tDuvesekSs4qM5ZBKpXiZGun7S2CYtEZRB3DYXkjGx&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
 &lt;span style="color:#204a87;font-weight:bold">&amp;#34;metadata&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
 &lt;span style="color:#204a87;font-weight:bold">&amp;#34;en-US&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#000;font-weight:bold">{&lt;/span>
 &lt;span style="color:#204a87;font-weight:bold">&amp;#34;sort_id&amp;#34;&lt;/span>&lt;span style="color:#000;font-weight:bold">:&lt;/span> &lt;span style="color:#0000cf;font-weight:bold">1&lt;/span>&lt;span style="color:#000;font-weight:bold">,&lt;/span>
